@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+   <head>
+       <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+		<link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
+
+		<link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/css/index.css">
+		<link rel="stylesheet" href="/static/css/chat.css">
+        <title>Welcome</title>
+   </head>
+   
+   <script src = "/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io();
+      function setUsername() {
+         var data={username:document.getElementById('name').value}; 
+         socket.emit('setUsername', data);
+      };
+      var user;
+      socket.on('userExists', function(data) {
+         document.getElementById('error-container').innerHTML = data;
+		 $('#error-container').show();
+      });
+      socket.on('userSet', function(data) {
+         user = data.username;
+		 $('body').removeClass('sample-background');
+         document.body.innerHTML = '<div class="right-section">\
+		 <div class="chat-top">Room:<input type = "text" id = "room_id"></div>\
+		 <div class="chat-canvas" id = "message-container"></div>\
+		 <div class="chat-input">\
+		 <div class="chat-input-text"><textarea class="chat-input-text__field" id="message" placeholder="Write a chat" autofocus></textarea></div>\
+		 <label class="chat-input-send" type="button" onclick="sendMessage()"></label>\
+		 </div>';
+		 
+      });
+	  
+	  
+      function sendMessage() {
+         var msg = document.getElementById('message').value;
+          var room_id = document.getElementById('room_id').value;
+         if(msg) {
+            socket.emit('msg', {message: msg, user: user,room_id:room_id});
+			$('#message').val('').focus(); // clear the message field and set focus
+         }
+      }
+      socket.on('newmsg', function(data) {
+         if(user) {
+			   document.getElementById('message-container').innerHTML += '<div class="chat-canvas__list">\
+			   <label class="chat-canvas__list-name">'+ data.user + '</label>\
+			   <label class="chat-canvas__list-separator">:</label>\
+			   <label class="chat-canvas__list-text">' + data.message  + '</label></div>'
+         }
+      })
+   </script>
+   
+   <body class="sample-background">
+	<!-- user info -->
+	<div class="container">
+    <div class="row">
+	      <!-- top -->
+      <div class="index-section index-top">
+        <div class="text-sort--center">
+          <img src="static/img/logo.png">
+        </div>
+      </div>
+	  </div>
+	  
+	  <!-- user info -->
+	  <div class="row">
+      <div class="index-section index-input">
+	  <div>
+        <input type="text" class="index-nickname" placeholder="Enter Your Name" id="name" name="name" value=""> 
+		</div>
+		<div>
+        <button type="button" class="index-button" id="btn_start" onclick = "setUsername()">Start Chat!</button>
+		</div>
+      </div>
+	  
+	</div>
+	
+	<div id = "error-container" class="alert alert-danger" role="alert" style="display:none"></div>
+  </div>
+     <script src="static/js/jquery-1.11.3.min.js"></script>
+   </body>
+</html>

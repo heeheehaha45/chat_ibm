@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <title>Welcome</title>
+</head>
+<script src="static/js/jquery-1.11.3.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script src="static/js/md5.min.js"></script>
+
+<script>
+    function htmlDecode(input) {
+        var e = document.createElement('div');
+        e.innerHTML = input;
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+    messages = <%-messages%>; //global var
+    console.log(messages);
+
+    var socket = io();
+
+
+    var userId = "<%-userId%>";
+    // var hashedId = md5(userId);
+
+    var friend_list = [];
+
+    <% for(var i=0; i<friend_list.length; i++) {%>
+    friend_list.push("<%= friend_list[i] %>");
+    <% } %>
+
+
+
+
+    for (var i = 0; i < friend_list.length; i++)
+        socket.emit('subscribe', friend_list[i]);
+
+
+    //socket.emit('subscribe', 'roomOne');
+    //socket.emit('subscribe', 'roomTwo');
+
+    socket.on('broadcast', function(data) {
+        //document.body.innerHTML = '';
+        //document.write(data.description);
+        //alert(data.description);
+        var input = data.content;
+        //check if hash(userId)==hashedId;
+        //var hashedId = CryptoJS.MD5(userId).toString();
+        var hashedId = md5(userId);
+
+        console.log("input=" + input);
+        console.log("hashedID=" + hashedId);
+
+
+        //   alert(input);
+        //   alert(hashedId);
+
+
+        if (input === hashedId) {
+            if (window.confirm("somebody has added you! join the conversation?")) {
+                location.reload();
+            }
+        }
+
+    });
+
+
+    socket.on('userSet', function(data) {
+        user = data.username;
+        $('body').removeClass('sample-background');
+        document.body.innerHTML = '<div class="right-section">\
+		 <div class="chat-top">Room:<input type = "text" id = ""></div>\
+            friendlist:<select id = "room_id">\
+              <option value="userA">userA</option>\
+              <option value="userB">userB</option>\
+              <option value="userC">userC</option>\
+            </select>\
+		 <div class="chat-canvas" id = "message-container"></div>\
+		 <div class="chat-input">\
+		 <div class="chat-input-text"><textarea class="chat-input-text__field" id="message" placeholder="Write a chat" autofocus></textarea></div>\
+		 <label class="chat-input-send" type="button" onclick="sendMessage()"></label>\
+		 </div>';
+
+    });
+
+
+    function sendMessage() {
+        var msg = document.getElementById('message').value;
+        var room_id = document.getElementById('room_id').value;
+        //console.log("room_id="+room_id);
+        // console.log("msg="+msg);
+
+        if (msg) {
+            socket.emit('send', {
+                room: room_id,
+                message: msg,
+                userId: userId
+            });
+
+            $('#message').val('').focus(); // clear the message field and set focus
+            /*
+               socket.emit('msg', {
+                   message: msg,
+                   user: user,
+                   room_id: room_id
+               });
+               $('#message').val('').focus(); // clear the message field and set focus
+            */
+        }
+
+    }
+
+    socket.on('newmsg', function(data) {
+        //if (user) {
+        //console.log(data.user + data.message);
+        console.log("room_id=" + data.room);
+        var newMsg = new Object();
+        newMsg.from = userId;
+        newMsg.to = "";
+        newMsg.msg = data.message;
+        updateChatArea(newMsg, data.room);
+        /*
+        document.getElementById('message-container').innerHTML += '<div class="chat-canvas__list">\
+			   <label class="chat-canvas__list-name">' + data.user + '</label>\
+			   <label class="chat-canvas__list-separator">:</label>\
+			   <label class="chat-canvas__list-text">' + data.message + '</label></div>'
+       */
+
+
+        //}
+    })
+
+    function updateChatArea(newMsg, room) {
+        var curRoom = $("#room_id").val();
+
+        messages[room].push(newMsg);
+        var oldText = $('#room_id option[value="' + room + '"]').text();
+        $('#room_id option[value="' + room + '"]').text(oldText + " new msg!");
+
+
+        changeChatRoom();
+
+    }
+
+    function changeChatRoom() {
+        var curRoom = $("#room_id").val();
+        console.log(curRoom);
+        $("#message-container").text(JSON.stringify(messages[curRoom]));
+        console.log(messages[curRoom]);
+
+    }
+
+</script>
+
+<body class="sample-background">
+    <!-- user info -->
+
+
+
+
+
+    <div class="right-section">
+        <div style='display:none' class="chat-top">
+            Room:<input type="text" id="">
+        </div>
+
+        friendlist:
+
+        <select id="room_id" onchange="changeChatRoom()">
+                <% for(var i=0; i<friend_list.length; i++) {%>
+                     <option value="<%= friend_list[i] %>">
+                        <%= room_name_mapping[i]+" "+friend_list[i] %>
+                     </option>
+                <% } %>
+             </select>
+        <div>
+
+            <form action="/new_friend" method="post">
+                <div>
+                    <input type="hidden" name="token" value="<%=token %>">
+                </div>
+
+
+                <input type='submit' value="new friend">
+            </form>
+
+
+
+        </div>
+
+
+        <div class="chat-canvas" id="message-container">
+
+
+        </div>
+        <div class="chat-input">
+            <div class="chat-input-text">
+                <textarea class="chat-input-text__field" id="message" placeholder="Write a chat" autofocus>
+                    </textarea>
+            </div>
+            <label class="chat-input-send" type="button" onclick="sendMessage()"></label>
+        </div>
+
+
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('body').removeClass('sample-background');
+            changeChatRoom();
+            console.log("roomId=" + document.getElementById('room_id').value);
+
+
+        });
+
+    </script>
+</body>
+
+</html>
