@@ -24,6 +24,7 @@
             <div class="index-section index-top">
                 <div class="text-sort--center">
                     <img src="static/img/logo.png">
+					<label class="index-title">Sign Up</label>
                 </div>
             </div>
         </div>
@@ -32,8 +33,7 @@
         <div class="row">
             <div class="index-section index-input">
                
-               <%-error%>
-               sign up:
+               
                 <form action="/new_user" method="post">
                     <div>
                         <input type="text" class="index-nickname" placeholder="Enter Your Email" id="email" name="email" value="">
@@ -42,16 +42,16 @@
                     <div>
                     </div>
                     <div>
-                        <button type="submit" class="index-button" id="btn_start" onclick="">Login</button>
+                        <button type="submit" class="index-button" id="btn_start" onclick="">Sign Up</button>
                     </div>
                 </form>
             </div>
-
         </div>
-        users:
-        
-
-            <div id="error-container" class="alert alert-danger" role="alert" style="display:none"></div>
+		
+		<% var errMsg = error;%>
+		<% if (error!= undefined && errMsg.length > 0) {%>
+			<div id="error-container" class="alert alert-danger" role="alert" style="display:block"><%-errMsg%></div>
+		<%}%>
     </div>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>

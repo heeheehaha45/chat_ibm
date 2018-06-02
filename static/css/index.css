@@ -66,6 +66,7 @@ input, button {
 
 .index-nickname, .index-userid {
   padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
   background: url("../img/icon-username-landing.svg") #fff no-repeat 12px;
   width: 290px;
   height: 48px;

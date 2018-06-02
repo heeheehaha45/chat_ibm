@@ -14,9 +14,8 @@
     <title>Welcome</title>
 </head>
 <script src="static/js/jquery-1.11.3.min.js"></script>
+<script src="/static/bootstrap/bootstrap.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-
-
 <script src="static/js/md5.min.js"></script>
 
 <script>
@@ -91,7 +90,6 @@
 		 <div class="chat-input-text"><textarea class="chat-input-text__field" id="message" placeholder="Write a chat" autofocus></textarea></div>\
 		 <label class="chat-input-send" type="button" onclick="sendMessage()"></label>\
 		 </div>';
-
     });
 
 
@@ -107,17 +105,9 @@
                 message: msg,
                 userId: userId
             });
-
-            $('#message').val('').focus(); // clear the message field and set focus
-            /*
-               socket.emit('msg', {
-                   message: msg,
-                   user: user,
-                   room_id: room_id
-               });
-               $('#message').val('').focus(); // clear the message field and set focus
-            */
         }
+		
+		$('#message').val('').focus(); // clear the message field and set focus
 
     }
 
@@ -145,8 +135,8 @@
         var curRoom = $("#room_id").val();
 
         messages[room].push(newMsg);
-        var oldText = $('#room_id option[value="' + room + '"]').text();
-        $('#room_id option[value="' + room + '"]').text(oldText + " new msg!");
+        //var oldText = $('#room_id option[value="' + room + '"]').text();
+        //$('#room_id option[value="' + room + '"]').text(oldText + " new msg!");
 
 
         changeChatRoom();
@@ -156,7 +146,35 @@
     function changeChatRoom() {
         var curRoom = $("#room_id").val();
         console.log(curRoom);
-        $("#message-container").text(JSON.stringify(messages[curRoom]));
+
+		<!--$("#message-container").text(JSON.stringify(messages[curRoom]));-->
+		
+		var content = "";
+				
+		for (i = 0; i < messages[curRoom].length; ++i) {
+
+			msgFrom = messages[curRoom][i]["from"];
+			
+			if (msgFrom == userId)
+			{
+				/**content += "ME say:"
+				content += messages[curRoom][i]["msg"];**/
+				content += '<div class="chat_chatboxmessage chat_self">'
+				+ messages[curRoom][i]["msg"] + '</div>';
+       
+			}
+			else
+			{
+				content += '<div class="chat_chatboxmessage">'
+				+ messages[curRoom][i]["msg"] + '</div>';
+			}
+		}
+		
+		$("#chat-top-title").html($("#room_id option:selected").text());
+		$("#message-container").html(content);
+		
+		$("#message-container").animate({ scrollTop: $("#message-container")[0].scrollHeight}, 1000);				
+		
         console.log(messages[curRoom]);
 
     }
@@ -165,38 +183,58 @@
 
 <body class="sample-background">
     <!-- user info -->
+<div class="wrapper">
 
+    <nav id="sidebar" class="active">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <h3><%=userId%></div>
+        <!-- Sidebar Links -->
+		<!--
+        <ul class="list-unstyled components">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>-->
 
+			<!-- Link with dropdown items -->
+            <!--<li>
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
 
-
-
-    <div class="right-section">
-        <div style='display:none' class="chat-top">
-            Room:<input type="text" id="">
-        </div>
-
-        friendlist:
-
-        <select id="room_id" onchange="changeChatRoom()">
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+		-->
+			<select style="display: block;" id="room_id" onchange="changeChatRoom()">
                 <% for(var i=0; i<friend_list.length; i++) {%>
                      <option value="<%= friend_list[i] %>">
-                        <%= room_name_mapping[i]+" "+friend_list[i] %>
+                        <!--<%= room_name_mapping[i]+" "+friend_list[i] %>-->
+						<%= room_name_mapping[i]%>
                      </option>
                 <% } %>
-             </select>
-        <div>
-
-            <form action="/new_friend" method="post">
+            </select>
+			
+			<form action="/new_friend" method="post">
                 <div>
                     <input type="hidden" name="token" value="<%=token %>">
                 </div>
 
-
-                <input type='submit' value="new friend">
+				<input type="submit" class="btn btn-info" value="New Friend!">
             </form>
+    </nav>
 
-
-
+    <div class="right-section">
+        <div class="chat-top">
+		
+			<button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+				<i class="glyphicon glyphicon-align-left"></i>
+			</button>
+		
+			<div id="chat-top-title" class="chat-top__title chat-top__title--messaging" style="display: block;"></div>
+					
         </div>
 
 
@@ -204,18 +242,29 @@
 
 
         </div>
-        <div class="chat-input">
-            <div class="chat-input-text">
-                <textarea class="chat-input-text__field" id="message" placeholder="Write a chat" autofocus>
-                    </textarea>
-            </div>
-            <label class="chat-input-send" type="button" onclick="sendMessage()"></label>
-        </div>
 
+		<div class="chat-input">
+            <div class="chat-input-text">
+                <textarea class="chat-input-text__field" id="message" autofocus></textarea>
+            </div>
+            <label id="btnSendMsg" class="chat-input-send" type="button"></label>
+        </div>
+		
 
     </div>
+</div>
+
+	
     <script>
         $(document).ready(function() {
+		    $('#sidebarCollapse').on('click', function () {
+				$('#sidebar').toggleClass('active');
+			});
+			
+			$('#btnSendMsg').on('click', function () {
+				sendMessage();
+			});
+	
             $('body').removeClass('sample-background');
             changeChatRoom();
             console.log("roomId=" + document.getElementById('room_id').value);
