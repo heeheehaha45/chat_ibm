@@ -116,7 +116,7 @@
         //console.log(data.user + data.message);
         console.log("room_id=" + data.room);
         var newMsg = new Object();
-        newMsg.from = userId;
+        newMsg.from = data.userId;
         newMsg.to = "";
         newMsg.msg = data.message;
         updateChatArea(newMsg, data.room);
