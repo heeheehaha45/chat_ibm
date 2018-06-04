@@ -24,7 +24,7 @@
             <div class="index-section index-top">
                 <div class="text-sort--center">
                     <img src="static/img/logo.png">
-					<label class="index-title">Sign Up</label>
+                    <label class="index-title">Sign Up</label>
                 </div>
             </div>
         </div>
@@ -32,26 +32,42 @@
         <!-- user info -->
         <div class="row">
             <div class="index-section index-input">
-               
-               
+
+
                 <form action="/new_user" method="post">
                     <div>
                         <input type="text" class="index-nickname" placeholder="Enter Your Email" id="email" name="email" value="">
-                    </div>    
-                        <input type="password" class="index-nickname" placeholder="Enter Your password" id="password" name="password" value="">
-                    <div>
                     </div>
+                    <input type="password" class="index-nickname" placeholder="Enter Your password" id="password" name="password" value="">
+                    <div>
+                        <input type="text" class="index-nickname" placeholder="Enter Your Interest" id="interest" name="interest" value="">
+                    </div>
+
+                    <div style="margin: 1rem;">
+                        <div>
+                            <div class="panel panel-info" style="width: 29rem; margin: 0 auto;">
+                                <div class="panel-heading">
+                                    <h4>If you are in university, would you like to match your classmates with same faculty?</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="password" class="index-nickname" placeholder="your faculty" id="faculty" name="faculty" value="">
+
+                    </div>
+
                     <div>
                         <button type="submit" class="index-button" id="btn_start" onclick="">Sign Up</button>
                     </div>
                 </form>
             </div>
         </div>
-		
-		<% var errMsg = error;%>
-		<% if (error!= undefined && errMsg.length > 0) {%>
-			<div id="error-container" class="alert alert-danger" role="alert" style="display:block"><%-errMsg%></div>
-		<%}%>
+
+        <% var errMsg = error;%>
+            <% if (error!= undefined && errMsg.length > 0) {%>
+                <div id="error-container" class="alert alert-danger" role="alert" style="display:block">
+                    <%-errMsg%>
+                </div>
+                <%}%>
     </div>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
