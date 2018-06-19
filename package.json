@@ -27,7 +27,12 @@
     "ws": "1.1.0",
     "ejs": "*",
     "crypto": "*",
-    "blueimp-md5":"*"
+    "blueimp-md5":"*",
+    "nodemailer":"*",
+    "ibm-cos-sdk":"*",
+    "formidable":"*",
+   
+    "path":"*"
       
   },
   "author": "IBM Corp",

@@ -7,8 +7,8 @@
 6 silly lifecycle get-started-node@0.1.1~prestart: no script for prestart, continuing
 7 info lifecycle get-started-node@0.1.1~start: get-started-node@0.1.1
 8 verbose lifecycle get-started-node@0.1.1~start: unsafe-perm in lifecycle true
-9 verbose lifecycle get-started-node@0.1.1~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/heeheehahah45/Desktop/fullPage.js-master/examples/bluemix/get-started-node/node_modules/.bin:/Users/heeheehahah45/apache-maven-3.5.2/bin:/Users/heeheehahah45/appengine-java-sdk-1.9.60/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Development/android-sdk/platform-tools:/Development/android-sdk/tools:
-10 verbose lifecycle get-started-node@0.1.1~start: CWD: /Users/heeheehahah45/Desktop/fullPage.js-master/examples/bluemix/get-started-node
+9 verbose lifecycle get-started-node@0.1.1~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/heeheehahah45/Desktop/fullPage.js-master/examples/chat_ibm_withUI/chat_ibm-master/node_modules/.bin:/Users/heeheehahah45/apache-maven-3.5.2/bin:/Users/heeheehahah45/appengine-java-sdk-1.9.60/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Development/android-sdk/platform-tools:/Development/android-sdk/tools:
+10 verbose lifecycle get-started-node@0.1.1~start: CWD: /Users/heeheehahah45/Desktop/fullPage.js-master/examples/chat_ibm_withUI/chat_ibm-master
 11 silly lifecycle get-started-node@0.1.1~start: Args: [ '-c', 'node server.js' ]
 12 silly lifecycle get-started-node@0.1.1~start: Returned: code: 1  signal: null
 13 info lifecycle get-started-node@0.1.1~start: Failed to exec start script
@@ -23,7 +23,7 @@
 14 verbose stack     at maybeClose (internal/child_process.js:920:16)
 14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:230:5)
 15 verbose pkgid get-started-node@0.1.1
-16 verbose cwd /Users/heeheehahah45/Desktop/fullPage.js-master/examples/bluemix/get-started-node
+16 verbose cwd /Users/heeheehahah45/Desktop/fullPage.js-master/examples/chat_ibm_withUI/chat_ibm-master
 17 error Darwin 15.6.0
 18 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
 19 error node v6.11.3

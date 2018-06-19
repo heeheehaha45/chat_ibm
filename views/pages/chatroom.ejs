@@ -87,8 +87,8 @@
                 userId: userId
             });
         }
-		
-		$('#message').val('').focus(); // clear the message field and set focus
+
+        $('#message').val('').focus(); // clear the message field and set focus
 
     }
 
@@ -112,86 +112,114 @@
         changeChatRoom();
     }
 
-	function selectFriend(friend) {
-		$("#room_id").val(friend);
-		changeChatRoom();
-	} 
-	
+    function selectFriend(friend) {
+        $("#room_id").val(friend);
+        changeChatRoom();
+    }
+
     function changeChatRoom() {
         var curRoom = $("#room_id").val();
         console.log(curRoom);
-		<!--$("#message-container").text(JSON.stringify(messages[curRoom]));-->
-		
-		var content = "";
-				
-		for (i = 0; i < messages[curRoom].length; ++i) {
+        <!--$("#message-container").text(JSON.stringify(messages[curRoom]));-->
 
-			msgFrom = messages[curRoom][i]["from"];
-			
-			if (msgFrom == userId)
-			{
-				content += '<div class="chat_chatboxmessage chat_self">'
-				+ messages[curRoom][i]["msg"] + '</div>';
-       
-			}
-			else
-			{
-				content += '<div class="chat_chatboxmessage">'
-				+ messages[curRoom][i]["msg"] + '</div>';
-			}
-		}
-		
-		$("#chat-top-title").html($("#room_id option:selected").text());
-		
-		$("#message-container").html(content);
-		$("#message-container").animate({ scrollTop: $("#message-container")[0].scrollHeight}, 1000);				
-		
+        var content = "";
+
+        for (i = 0; i < messages[curRoom].length; ++i) {
+
+            msgFrom = messages[curRoom][i]["from"];
+
+            if (msgFrom == userId) {
+                content += '<div class="chat_chatboxmessage chat_self">' +
+                    messages[curRoom][i]["msg"] + '</div>';
+
+            } else {
+                content += '<div class="chat_chatboxmessage">' +
+                    messages[curRoom][i]["msg"] + '</div>';
+            }
+        }
+
+        $("#chat-top-title").html($("#room_id option:selected").text());
+
+        $("#message-container").html(content);
+        $("#message-container").animate({
+            scrollTop: $("#message-container")[0].scrollHeight
+        }, 1000);
+
         console.log(messages[curRoom]);
 
     }
-	
+
 </script>
 
 <body>
     <!-- user info -->
-<div class="wrapper">
+    <div class="wrapper">
 
-            <nav id="sidebar" class="active">
-                <div class="sidebar-header">
-                    <h1>Circle</h1>
-                </div>
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <h1>Circle</h1>
+            </div>
 
-                <ul class="list-unstyled components">
-                    <p><%=userId%></p>
-                    <li class="active">
-                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">My Friends</a>
-                        <ul class="collapse list-unstyled" id="homeSubmenu">
-							<% for(var i=0; i<friend_list.length; i++) {%>
-								<li><a href="javascript:selectFriend('<%= friend_list[i] %>')"><%= room_name_mapping[i]%></a></li>
-							<% } %>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">About Circle</a>
-						<!--
+            <ul class="list-unstyled components">
+                <p>
+                    <%=userId%>
+                </p>
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">My Friends</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <% for(var i=0; i<friend_list.length; i++) {%>
+                            <li>
+                                <a href="javascript:selectFriend('<%= friend_list[i] %>')">
+                                    <%= room_name_mapping[i]%>
+                                </a>
+                            </li>
+                            <% } %>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">About Circle</a>
+                    <!--
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">
                             <li><a href="#">Page 1</a></li>
                             <li><a href="#">Page 2</a></li>
                             <li><a href="#">Page 3</a></li>
                         </ul>-->
-                    </li>
-                </ul>
+                </li>
+            </ul>
 
-                <ul class="list-unstyled CTAs">
-                    <!--<li><a href="#" class="">Match New Friend!</a></li>-->
-					<form id="frmSearchNewFriend" action="/new_friend" method="post">
+            <ul class="list-unstyled CTAs">
+                <!--<li><a href="#" class="">Match New Friend!</a></li>-->
+                <!--	<form id="frmSearchNewFriend" action="/new_friend" method="post">
 						<input type="hidden" name="token" value="<%=token %>">
 						<li><input type="submit" class="btn btn-info btn-lg" value="Match New Friend!"></li>
 					</form>
-                </ul>
-				
-			<select style="display: none;" id="room_id" onchange="changeChatRoom()">
+                -->
+                <script>
+                        function getNewFriends(){
+                            $.get("/new_friend_list", {
+                                t: $("#userT").val()
+                            })
+                            .done(function(data) {
+                                var str="";
+                                for (var i = 0; i < data.length; i++) {
+                                    str = str+"Potential friend "+ i +" 's data:\n" 
+                                    str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
+                                    str=str+"\n\n";
+                                }
+                                
+                                alert(str) ;
+                                console.log(str);
+                            });
+                        }
+                </script>
+                <form id="frmSearchNewFriend" action="/new_friend" method="post">
+                    <input type="hidden" id="userT" name="token" value="<%=token %>">
+                    <li><input type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friend!"></li>
+                </form>
+            </ul>
+
+            <select style="display: none;" id="room_id" onchange="changeChatRoom()">
                 <% for(var i=0; i<friend_list.length; i++) {%>
                      <option value="<%= friend_list[i] %>">
                         <!--<%= room_name_mapping[i]+" "+friend_list[i] %>-->
@@ -199,64 +227,64 @@
                      </option>
                 <% } %>
             </select>
-			
-			
-            </nav>
-			
-	<div id="loader" style="display: none;"></div>
-	<div id="loader-text" style="display: none;">Searching...</div>
-    <div id="content" class="active">	
-        <div class="chat-top">
-			<button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+
+
+        </nav>
+
+        <div id="loader" style="display: none;"></div>
+        <div id="loader-text" style="display: none;">Searching...</div>
+        <div id="content" class="active">
+            <div class="chat-top">
+                <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
 				<i class="glyphicon glyphicon-align-left"></i>
 			</button>
-		
-			<div id="chat-top-title" class="chat-top__title chat-top__title--messaging" style="display: block;"></div>		
-        </div>
 
-
-        <div class="chat-canvas" id="message-container">
-        </div>
-
-		<div id="chat-input" class="chat-input active">
-            <div class="chat-input-text">
-                <textarea class="chat-input-text__field" id="message" autofocus></textarea>
+                <div id="chat-top-title" class="chat-top__title chat-top__title--messaging" style="display: block;"></div>
             </div>
-            <label id="btnSendMsg" class="chat-input-send" type="button"></label>
+
+
+            <div class="chat-canvas" id="message-container">
+            </div>
+
+            <div id="chat-input" class="chat-input active">
+                <div class="chat-input-text">
+                    <textarea class="chat-input-text__field" id="message" autofocus></textarea>
+                </div>
+                <label id="btnSendMsg" class="chat-input-send" type="button"></label>
+            </div>
         </div>
     </div>
-</div>
 
-	
+
     <script>
-        $(document).ready(function() {		
-			$('#frmSearchNewFriend').submit(function(event) {
-				event.preventDefault();
-				$('#sidebar, #content, #chat-input').toggleClass('active');
-				var form = this;
-				document.getElementById("content").style.display = "none";
-				document.getElementById("loader").style.display = "block";
-				document.getElementById("loader-text").style.display = "block";
-				setTimeout(function () {
-				  document.getElementById("loader").style.display = "none";
-				  document.getElementById("loader-text").style.display = "none";
-				  document.getElementById("content").style.display = "block";
-				  form.submit();
-				}, 3000); // in milliseconds
-			});
+        $(document).ready(function() {
+            $('#frmSearchNewFriend').submit(function(event) {
+                event.preventDefault();
+                $('#sidebar, #content, #chat-input').toggleClass('active');
+                var form = this;
+                document.getElementById("content").style.display = "none";
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("loader-text").style.display = "block";
+                setTimeout(function() {
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("loader-text").style.display = "none";
+                    document.getElementById("content").style.display = "block";
+                    form.submit();
+                }, 3000); // in milliseconds
+            });
 
-            $('#sidebarCollapse').on('click', function () {
+            $('#sidebarCollapse').on('click', function() {
                 $('#sidebar, #content, #chat-input').toggleClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
-			
-			
-			$('#btnSendMsg').on('click', function () {
-				sendMessage();
-			});
-	        
-			changeChatRoom();
+
+
+            $('#btnSendMsg').on('click', function() {
+                sendMessage();
+            });
+
+            changeChatRoom();
             console.log("roomId=" + document.getElementById('room_id').value);
         });
 
