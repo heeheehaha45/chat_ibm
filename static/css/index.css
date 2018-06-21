@@ -1,11 +1,9 @@
-
 input, button {
   outline: none;
 }
 
-.sample-background {
-  background: #6e5baa;
- /*min-width: 624px;*/
+.index-background {
+  /*background: #81D8D0;*/
   overflow-x: scroll;
 }
 
@@ -24,8 +22,7 @@ input, button {
   font-family: 'Exo 2';
   font-weight: 200;
   font-size: 26px;
-  margin: 0 0 0 6px;
-  line-height: 76px;
+  padding: 10px 10px 10px 10px;
 }
 
 .text-sort {
@@ -63,11 +60,16 @@ input, button {
   border: 2px solid #32C5E6;
 }
 
+.index-user:focus, .index-email:focus, .index-password:focus, .index-interest:focus,
+.index-user:hover, .index-email:hover, .index-password:hover, .index-interest:hover,
+.index-user:hover, .index-email:hover, .index-password:active, .index-interest:active {
+  border: 2px solid #32C5E6;
+}
 
-.index-nickname, .index-userid {
+.index-user {
   padding: 0 10px 0 44px;
   margin: 5px 0 0 0;
-  background: url("../img/icon-username-landing.svg") #fff no-repeat 12px;
+  background: url("../img/icon-user.svg") #fff no-repeat 12px;
   width: 290px;
   height: 48px;
   border: 2px solid #fff;
@@ -78,7 +80,77 @@ input, button {
   font-weight: 400;
   font-size: 16px;
   color: #555555;
+  position:relative;
 }
+
+.index-email {
+  padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
+  background: url("../img/icon-email.svg") #fff no-repeat 12px;
+  width: 290px;
+  height: 48px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 16px;
+  color: #555555;
+  position:relative;
+}
+
+.index-password {
+  padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
+  background: url("../img/icon-key.svg") #fff no-repeat 12px;
+  width: 290px;
+  height: 48px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 16px;
+  color: #555555;
+  position:relative;
+}
+
+.index-interest {
+  padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
+  background: url("../img/icon-heart.svg") #fff no-repeat 12px;
+  width: 290px;
+  height: 48px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 16px;
+  color: #555555;
+  position:relative;
+}
+
+.index-faculty {
+  padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
+  background: url("../img/icon-college.svg") #fff no-repeat 12px;
+  width: 290px;
+  height: 48px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 16px;
+  color: #555555;
+  position:relative;
+}
+
 .index-userid {
   margin-right: 120px;
   margin-top: 40px;
@@ -117,17 +189,18 @@ input, button {
   -moz-border-radius: 2px;
   border-radius: 2px;
   border: 0;
-  background: #32c5e6;
+  background: #FF8691;
   font-family: 'Exo 2';
   font-weight: 700;
   font-size: 16px;
   color: #fff;
   padding: 0;
+  position:relative;
 }
 
 .index-button:hover,
 .index-button:focus {
-  background: #328FE6;
+  background: #FF5F6D;
 }
 
 .index-text {
@@ -147,11 +220,26 @@ input, button {
   margin-top: 80px;
 }
 
-a.download-sample:link,
-a.download-sample:visited {
-  font-family: 'Exo 2';
-  font-weight: 300;
-  font-size: 16px;
-  color: #c7b0ff;
-  text-align: center;
+.watermark-container {
+	max-width: 310px;
+	margin: 0 auto;
+	padding: 0 10px 0px 10px;
+}
+
+.color-banner {
+    background: linear-gradient(to top, #3F62A1 0%, #3F62A1 30%, #7391C8 100%);
+	background-repeat: no-repeat;
+	height:100vh;
+}
+
+.color-banner:before {
+    content: '';
+    background-image: url("../img/banner-shape.png");
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    position: absolute;
+    width: 100%;
+    height: 35em;
+    left: 0;
+	bottom: 0;
 }

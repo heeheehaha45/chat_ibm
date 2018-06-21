@@ -16,19 +16,18 @@
 
 
 
-<body class="sample-background">
+<body>
+	<section class="color-banner">
     <!-- user info -->
     <div class="container">
         <div class="row">
             <!-- top -->
             <div class="index-section index-top">
                 <div class="text-sort--center">
-                    <img src="static/img/logo.png">
                     <label class="index-title">Sign Up</label>
                 </div>
             </div>
         </div>
-
         <!-- user info -->
         <div class="row">
             <div class="index-section index-input">
@@ -36,14 +35,14 @@
 
                 <form action="/new_user" method="post">
                    <div>
-                        <input type="text" class="index-nickname" placeholder="Enter Your nickname" id="name" name="name" value="">
+                        <input type="text" class="index-user" placeholder="Enter Your nickname" id="name" name="name" value="">
                     </div>
                     <div>
-                        <input type="text" class="index-nickname" placeholder="Enter Your Email" id="email" name="email" value="">
+                        <input type="text" class="index-email" placeholder="Enter Your Email" id="email" name="email" value="">
                     </div>
-                    <input type="password" class="index-nickname" placeholder="Enter Your password" id="password" name="password" value="">
+                    <input type="password" class="index-password" placeholder="Enter Your password" id="password" name="password" value="">
                     <div>
-                        <input type="text" class="index-nickname" placeholder="Enter Your Interest" id="interest" name="interest" value="">
+                        <input type="text" class="index-interest" placeholder="Enter Your Interest" id="interest" name="interest" value="">
                     </div>
 
                     <div style="margin: 1rem;">
@@ -54,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="index-nickname" placeholder="your faculty" id="faculty" name="faculty" value="">
+                        <input type="text" class="index-faculty" placeholder="your faculty" id="faculty" name="faculty" value="">
 
                     </div>
 
@@ -72,6 +71,7 @@
                 </div>
                 <%}%>
     </div>
+	</section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
 

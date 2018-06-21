@@ -1420,10 +1420,10 @@ label.chat-input-file.file-upload {
 .chat_chatboxmessage:not(.chat_self),.chat_istypingbox {
  color:#000;
  font-family:inherit;
- font-size:14px;
+ font-size:15px;
  font-weight: normal;
  word-break:normal;
- margin:12px 3px 3px 12px;
+ margin:6px 5px 5px 12px;
  padding:11px 18px;
  border-radius:25px;
  background:#e6e9ed;
@@ -1436,12 +1436,12 @@ label.chat-input-file.file-upload {
 }
 .chat_chatboxmessage.chat_self {
  font-family:inherit;
- font-size:14px ;
+ font-size:15px ;
  font-weight: normal;
  border-radius:25px;
  padding:11px 18px;
  background:#c0ebe7 ;
- margin:12px 12px 3px 3px;
+ margin:6px 12px 5px 3px;
  color:#000;
  position:relative;
  display:inline-block;
@@ -1468,7 +1468,7 @@ label.chat-input-file.file-upload {
     left: 0;*/
     height: 100vh;
     /*z-index: 999;*/
-    background: #8BC34A;
+    background: #8DA6D2;
     color: #fff;
     transition: all 0.3s;
 	overflow-y: auto;
@@ -1480,7 +1480,7 @@ label.chat-input-file.file-upload {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #7CB342;
+    background: #7391C8;
 }
 
 #sidebar ul.components {
@@ -1491,6 +1491,7 @@ label.chat-input-file.file-upload {
 #sidebar ul p {
     color: #fff;
     padding: 10px;
+	font-size: 1.3em;
 }
 
 #sidebar ul li a {
@@ -1499,13 +1500,14 @@ label.chat-input-file.file-upload {
     display: block;
 }
 #sidebar ul li a:hover {
-    color: #8BC34A;
+    color: #21C2CA;
     background: #fff;
 }
 
 #sidebar ul li > a, a[aria-expanded="true"] {
     color: #fff;
-    background: #7CB342;
+	font-size: 1.4em;
+    background: #7391C8;
 }
 
 
@@ -1527,9 +1529,9 @@ a[aria-expanded="true"]::before {
 
 
 ul ul a {
-    font-size: 0.9em !important;
+    font-size: 1.2em !important;
     padding-left: 30px !important;
-    background: #7CB342;
+    background: #7391C8;
 }
 
 ul.CTAs {
@@ -1545,10 +1547,10 @@ ul.CTAs a {
 }
 a.download {
     background: #fff;
-    color: #8BC34A;
+    color: #21C2CA;
 }
 a.article, a.article:hover {
-    background: #7CB342 !important;
+    background: #7391C8 !important;
     color: #fff !important;
 }
 
@@ -1598,8 +1600,8 @@ a.article, a.article:hover {
 }
 
 .btn-info{
-	background-color:#FF5F6D;
-	border-color:#FF5F6D;
+	background-color:#FF8691;
+	border-color:#FF8691;
 }
 
 .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open .dropdown-toggle.btn-info{
@@ -1640,4 +1642,44 @@ a.article, a.article:hover {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.modal-content {
+	background-color: transparent;
+	background: url("../img/circle-card.png") no-repeat center center;
+	border: none;
+	border-radius: 10px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	height:430px;
+	width:300px;
+	margin: auto;
+}
+
+/* The Close Button */
+.close {
+    color: #fff;
+    position: fixed;
+    top:0;
+    right:0;
+	padding: 30px;
+    font-size: 48px;
+    font-weight: bold;
+	text-shadow: none;
+	opacity: 100;
+	z-index: 1001; /* Sit on top */
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
 }

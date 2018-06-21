@@ -12,12 +12,44 @@
     <link rel="stylesheet" href="/static/css/index.css">
     <link rel="stylesheet" href="/static/css/chat.css">
     <title>Circle</title>
+	
+	<style>
+      
+      .tc-card-name{
+        font-weight:normal;
+      }
+      
+      #friend-card{
+        position:relative;
+        width:320px;
+        height:430px;
+        left:50%;
+        margin-left:-160px;
+      }
+	  
+	  /* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+</style>
 </head>
 <script src="static/js/jquery-1.11.3.min.js"></script>
 <script src="/static/bootstrap/bootstrap.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="static/js/md5.min.js"></script>
-
+<script src="static/js/hammer.min.js"></script>
+<script src="static/js/tindercards.js"></script>
 <script>
     function htmlDecode(input) {
         var e = document.createElement('div');
@@ -124,28 +156,31 @@
 
         var content = "";
 
-        for (i = 0; i < messages[curRoom].length; ++i) {
+		if (typeof messages[curRoom] != 'undefined')
+		{
+			for (i = 0; i < messages[curRoom].length; ++i) {
 
-            msgFrom = messages[curRoom][i]["from"];
+				msgFrom = messages[curRoom][i]["from"];
 
-            if (msgFrom == userId) {
-                content += '<div class="chat_chatboxmessage chat_self">' +
-                    messages[curRoom][i]["msg"] + '</div>';
+				if (msgFrom == userId) {
+					content += '<div class="chat_chatboxmessage chat_self">' +
+						messages[curRoom][i]["msg"] + '</div>';
 
-            } else {
-                content += '<div class="chat_chatboxmessage">' +
-                    messages[curRoom][i]["msg"] + '</div>';
-            }
-        }
+				} else {
+					content += '<div class="chat_chatboxmessage">' +
+						messages[curRoom][i]["msg"] + '</div>';
+				}
+			}
 
-        $("#chat-top-title").html($("#room_id option:selected").text());
+			$("#chat-top-title").html($("#room_id option:selected").text());
 
-        $("#message-container").html(content);
-        $("#message-container").animate({
-            scrollTop: $("#message-container")[0].scrollHeight
-        }, 1000);
+			$("#message-container").html(content);
+			$("#message-container").animate({
+				scrollTop: $("#message-container")[0].scrollHeight
+			}, 1000);
 
-        console.log(messages[curRoom]);
+			console.log(messages[curRoom]);
+		}
 
     }
 
@@ -154,10 +189,9 @@
 <body>
     <!-- user info -->
     <div class="wrapper">
-
         <nav id="sidebar" class="active">
             <div class="sidebar-header">
-                <h1>Circle</h1>
+               <img src="static/img/logo.png">
             </div>
 
             <ul class="list-unstyled components">
@@ -196,22 +230,38 @@
 					</form>
                 -->
                 <script>
+				// Get the modal
                         function getNewFriends(){
+							var cards = [];
+							
                             $.get("/new_friend_list", {
                                 t: $("#userT").val()
                             })
                             .done(function(data) {
                                 var str="";
                                 for (var i = 0; i < data.length; i++) {
-                                    str = str+"Potential friend "+ i +" 's data:\n" 
-                                    str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
-                                    str=str+"\n\n";
+                                    //str = str+"Potential friend "+ i +" 's data:\n" 
+                                    //str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
+                                    //str=str+"\n\n";
+									
+									cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, data[i].faculty, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));
+									
                                 }
                                 
-                                alert(str) ;
-                                console.log(str);
+                                //alert(str) ;
+                                //console.log(str);
+								
+								$('#myModal').show();
+
+								// Render cards
+								Tindercardsjs.render(cards, $('#friend-card'), function (event) {
+								  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
+								  console.log(event.card);
+								});
                             });
                         }
+						
+
                 </script>
                 <form id="frmSearchNewFriend" action="/new_friend" method="post">
                     <input type="hidden" id="userT" name="token" value="<%=token %>">
@@ -227,8 +277,6 @@
                      </option>
                 <% } %>
             </select>
-
-
         </nav>
 
         <div id="loader" style="display: none;"></div>
@@ -241,6 +289,15 @@
 
                 <div id="chat-top-title" class="chat-top__title chat-top__title--messaging" style="display: block;"></div>
             </div>
+			<!-- The Modal -->
+			<div id="myModal" class="modal">
+			  <!-- Modal content -->
+			  <span class="close" id="closeModal">&times;</span>
+			  <div class="modal-content">
+				<div id="friend-card"></div>
+			  </div>
+
+			</div>
 
 
             <div class="chat-canvas" id="message-container">
@@ -286,9 +343,16 @@
 
             changeChatRoom();
             console.log("roomId=" + document.getElementById('room_id').value);
+			
+			// When the user clicks on <span> (x), close the modal
+			$('#closeModal').on('click', function() {
+				$('#friend-card').empty(); 
+				$('#myModal').hide();
+            });
         });
 
     </script>
+
 </body>
 
 </html>
