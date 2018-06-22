@@ -132,6 +132,8 @@
         newMsg.from = data.userId;
         newMsg.to = "";
         newMsg.msg = data.message;
+        //added a field "time" to data; so that the messages can be sorted
+        //alert(data.time);
         updateChatArea(newMsg, data.room);
     })
 

@@ -1556,6 +1556,8 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('send', function (data) {
         console.log('sending message');
+        data.time = new Date().toUTCString();
+        data.hasRead=false;
         io.sockets.in(data.room).emit('newmsg', data);
 
 
@@ -1565,7 +1567,12 @@ io.sockets.on('connection', function (socket) {
         newMsg.from = data.userId;
         newMsg.to = "";
         newMsg.msg = data.message;
-
+        newMsg.time = data.time;
+        newMsg.hasRead = data.hasRead;
+        newMsg.id=randomString();
+        
+        console.log(newMsg.time);
+        
         if (!mydb) {
             //response.json(names);
             return;
