@@ -133,29 +133,29 @@ app.get('/error', function (req, res) {
 
 app.get('/preview/', function (req, res) {
     var id = req.query.picId;
-   // var id = "1XJsLks1lGMS1vaVvBsfvJLuaOa0L4";
+    // var id = "1XJsLks1lGMS1vaVvBsfvJLuaOa0L4";
     var filename = "profile_pic";
     var content_type;
     var ext;
-      mydb.list({
+    mydb.list({
         include_docs: true
     }, function (err, body) {
         if (!err) {
             var found = false;
             var token;
             body.rows.forEach(function (row) {
-                if ( row.doc._id === id) {
-                
+                if (row.doc._id === id) {
+
                     found = true;
-                    content_type=row.doc._attachments.profile_pic.content_type;
-                    ext=content_type.substr(content_type.length - 3); 
-                    filename = filename ;
+                    content_type = row.doc._attachments.profile_pic.content_type;
+                    ext = content_type.substr(content_type.length - 3);
+                    filename = filename;
                 }
             });
             console.log("found=" + found);
 
             if (found) {
-                
+
                 // create a readableStream from the doc's attachment
                 var readStream = mydb.attachment.get(id, filename, function (err) {
                     // note: no second argument
@@ -168,16 +168,16 @@ app.get('/preview/', function (req, res) {
                         console.dir('the stream has been successfully piped')
                 })
                 // set the appropriate headers here
-                res.setHeader("Content-Type", "image/"+ext);
+                res.setHeader("Content-Type", "image/" + ext);
 
                 // pipe the attachment to the client's response
                 readStream.pipe(res);
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
             } else {
                 res.render('pages/error');
 
@@ -187,15 +187,15 @@ app.get('/preview/', function (req, res) {
             console.log(err);
         }
     });
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
 })
 
 
@@ -227,9 +227,240 @@ function blah() {
 }
 
 
+app.get("/update_profile_data_page", function (req, res) {
+
+    var token = req.query.token;
+    var found=false;
+    var user;
+    
+    if (!mydb) {
+        //response.json(names);
+        return;
+    }
+
+    mydb.list({
+        include_docs: true
+    }, function (err, body) {
+        if (!err) {
+            var found = false;
+          
+            body.rows.forEach(function (row) {
+                if (row.doc.type === "user" && row.doc.token === token) {
+                    user = row.doc;
+                    found = true;
+
+                }
+            });
+            console.log("found=" + found);
+
+            if (found) {
+                user.description;
+                
+                
+                user.nickname ;
+                user.interest;
+                user.description;
+                //user.pw="123";
+               
+                res.render('pages/update_profile_data_page', {
+                    token: req.query.token ,
+                    nickname_old:user.nickname ,
+                    interest_old:user.interest ,
+                    description_old:user.description
+                });
+                
+                
+                
+            } else {
+                res.render('pages/error');
+
+            }
+        } //endif
+        else {
+            console.log(err);
+        }
+    });
+    
+    
+    
+
+
+});
+
+app.get("/update_profile_page", function (req, res) {
+    //a picId is required to /update_profile_page?picId=xxxx
+
+
+    res.render('pages/update_profile_page', {
+        picId: req.query.picId
+
+    });
+
+
+});
+
+
+app.post("/update_profile_data", urlencodedParser,function (req, res) {
+    
+    var token = req.body.token;
+    var nickname = req.body.nickname;
+    var interest = req.body.interest;
+    var description = req.body.description;
+    
+    var user;
+    if (!mydb) {
+        //response.json(names);
+        return;
+    }
+
+    mydb.list({
+        include_docs: true
+    }, function (err, body) {
+        if (!err) {
+            var found = false;
+          
+            body.rows.forEach(function (row) {
+                if (row.doc.type === "user" && row.doc.token === token) {
+                    user = row.doc;
+                    found = true;
+
+                }
+            });
+            console.log("found=" + found);
+
+            if (found) {
+                user.nickname = nickname;
+                user.interest= interest;
+                user.description=description;
+                //user.pw="123";
+                mydb.insert(user, function (err, body, header) {
+                    if (err) {
+                        console.log('[mydb.insert] ', err.message);
+                        res.send("Error");
+                    }
+                    res.redirect('/chatroom?t=' + token);
+                });
+                
+            } else {
+                res.render('pages/error');
+
+            }
+        } //endif
+        else {
+            console.log(err);
+        }
+    });
+    
+    
+    
+    
+});
 
 
 
+app.post("/update_profile", function (req, res) {
+    //todo: delete the old profilepic and create a new one
+
+
+    //delete old profile pic
+
+
+    //////////
+
+
+    var picId;
+    var id;
+    var rev;
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        // `file` is the name of the <input> field of type `file`
+        var old_path = files.file.path,
+            file_size = files.file.size,
+            file_ext = files.file.name.split('.').pop(),
+            file_ext = file_ext.toLowerCase();
+
+
+        index = old_path.lastIndexOf('/') + 1,
+            file_name = old_path.substr(index);
+        console.log(file_ext);
+        picId = fields.picId;
+
+        //delete the old attachment
+        (function () {
+            // var picId = req.query.picId;
+            var id;
+            var rev;
+
+            console.log("picId=" + picId);
+
+            //find the rev from the picId
+            mydb.list({
+                include_docs: true
+            }, function (err, body) {
+                if (!err) {
+                    var found = false;
+
+                    //fetch old friend list
+                    body.rows.forEach(function (row) {
+                        if (row.doc._id === picId) {
+                            //user exist already
+                            found = true;
+                            rev = row.doc._rev;
+                        }
+                    });
+                    //delete the record if found
+                    if (found) {
+                        console.log("rev=" + rev);
+                        mydb.destroy(picId, rev, function (err, body) {
+                            if (!err)
+                                console.log(body);
+                            else
+                                console.log(err);
+                        });
+
+                        //new attachment
+                        fs.createReadStream(old_path).pipe(
+
+                            mydb.attachment.insert(picId, 'profile_pic', null, 'image/' + file_ext, {
+                                _rev: rev
+                            }, function (err, body) {
+
+                                if (!err)
+                                    console.log(body);
+                                else
+                                    console.log(err);
+
+                                res.render('pages/update_profile_page', {
+                                    picId: picId
+
+                                });
+
+                            })
+
+                        );
+                        /////////
+
+                    } else {
+                        res.redirect('/error');
+                    }
+
+                } //endif
+                else {
+                    console.log(err);
+                }
+            });
+
+        })();
+
+
+
+        ///////////
+
+
+
+    });
+
+});
 
 app.post("/upload_process", function (req, res) {
     var picId;
@@ -241,17 +472,17 @@ app.post("/upload_process", function (req, res) {
         var old_path = files.file.path,
             file_size = files.file.size,
             file_ext = files.file.name.split('.').pop(),
-            file_ext=file_ext.toLowerCase();
-            
-            
-            index = old_path.lastIndexOf('/') + 1,
+            file_ext = file_ext.toLowerCase();
+
+
+        index = old_path.lastIndexOf('/') + 1,
             file_name = old_path.substr(index);
         console.log(file_ext);
         picId = fields.picId;
 
         fs.createReadStream(old_path).pipe(
 
-            mydb.attachment.insert(picId, 'profile_pic', null, 'image/'+file_ext, {
+            mydb.attachment.insert(picId, 'profile_pic', null, 'image/' + file_ext, {
                 _rev: rev
             }, function (err, body) {
 
@@ -265,14 +496,6 @@ app.post("/upload_process", function (req, res) {
             })
 
         );
-
-
-
-
-
-
-
-
 
     });
 
@@ -482,7 +705,7 @@ function randomString() {
 
 
 
-
+//old and legacy function
 app.post('/new_user', urlencodedParser, function (req, res) {
     // Prepare output in JSON format
     response = {
@@ -496,7 +719,7 @@ app.post('/new_user', urlencodedParser, function (req, res) {
     var interest = req.body.interest;
     var faculty = req.body.faculty;
     var name = req.body.name;
-
+    var description = req.body.description;
     //auth
     if (!mydb) {
         //response.json(names);
@@ -542,6 +765,7 @@ app.post('/new_user', urlencodedParser, function (req, res) {
                 user.interest = interest;
                 user.faculty = faculty;
                 user.name = name;
+                user.description = description;
                 //add to db
                 mydb.insert(user, function (err, body, header) {
                     if (err) {
@@ -832,8 +1056,8 @@ app.get('/new_friend_list', urlencodedParser, function (req, res) {
                         var frd = new Object;
 
                         frd.name = row.doc.name;
-                     //   frd.profilePic = row.doc.profilePic;
-                        frd.picURL ="/preview?picId="+row.doc.picId;
+                        //   frd.profilePic = row.doc.profilePic;
+                        frd.picURL = "/preview?picId=" + row.doc.picId;
                         frd.description = row.doc.description;
                         frd.faculty = row.doc.faculty;
                         frd.identity = row.doc.identity;
@@ -980,10 +1204,18 @@ app.get('/new_friend_select', urlencodedParser, function (req, res) {
 
                 newRoom.type = "room";
                 newRoom.roomId = concate;
+                
+                var time=new Date().toUTCString();
+                
                 newRoom.history = [{
                     "from": user.email,
                     "to": newFriendDoc.email,
-                    "msg": "I have added you. Nice to meet you!"
+                    "msg": "I have added you. Nice to meet you!",
+                    "time" : time,
+                    "hasRead" : false,
+                    "id" : randomString()
+                    
+                    
                 }];
                 mydb.insert(newRoom, function (err, body, header) {
                     if (err) {
@@ -1194,6 +1426,8 @@ app.get('/chatroom', function (req, res) {
     var friend_list = [];
     var room_name_mapping = [];
     var messages = new Object();
+    
+    var picId;
     ///////////////
 
     if (!mydb) {
@@ -1214,6 +1448,7 @@ app.get('/chatroom', function (req, res) {
                     /////////////////////////    
                     //token matched      
                     userId = row.doc.email;
+                    picId = row.doc.picId;
                     _friend_list = row.doc.friend_list;
                     console.log("row.doc.friend_list=" + row.doc.friend_list);
                     found = true;
@@ -1282,7 +1517,9 @@ app.get('/chatroom', function (req, res) {
                     room_name_mapping: room_name_mapping,
                     // messages:JSON.stringify(messages).replace('\\"',"'")
                     //    messages:JSON.stringify(messages).replace('\\"',"\\\"")
-                    messages: JSON.stringify(messages)
+                    messages: JSON.stringify(messages),
+                    picId: picId,
+                    picURL: "/preview?picId="+picId
                 });
 
             } else {
@@ -1557,7 +1794,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('send', function (data) {
         console.log('sending message');
         data.time = new Date().toUTCString();
-        data.hasRead=false;
+        data.hasRead = false;
         io.sockets.in(data.room).emit('newmsg', data);
 
 
@@ -1569,10 +1806,10 @@ io.sockets.on('connection', function (socket) {
         newMsg.msg = data.message;
         newMsg.time = data.time;
         newMsg.hasRead = data.hasRead;
-        newMsg.id=randomString();
-        
+        newMsg.id = randomString();
+
         console.log(newMsg.time);
-        
+
         if (!mydb) {
             //response.json(names);
             return;

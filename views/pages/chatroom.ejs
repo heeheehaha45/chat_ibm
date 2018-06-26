@@ -312,6 +312,20 @@
                         
  
                 </script>
+                
+                <img src="<%= picURL %>"  height="42" width="42">
+                
+                 <form id="" action="/update_profile_page" method="GET">
+                    <input type="hidden"  name="picId" value="<%= picId%>">
+                    <li><input type="submit" class="btn btn-info btn-lg" value="Change profile pic"></li>
+                 </form>
+                 
+                  <form id="" action="/update_profile_data_page" method="GET">
+                    <input type="hidden"  name="token" value="<%= token%>">
+                    <li><input type="submit" class="btn btn-info btn-lg" value="Change profile data"></li>
+                 </form>
+                
+                
                 <form id="frmSearchNewFriend" action="/new_friend" method="post">
                     <input type="hidden" id="userT" name="token" value="<%=token %>">
                     <li><input type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friend!"></li>
