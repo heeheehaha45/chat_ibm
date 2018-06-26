@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-
+ 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+ 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
-
+ 
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
     <link rel="stylesheet" href="/static/css/chat.css">
     <title>Circle</title>
-	
-	<style>
+    
+    <style>
       
       .tc-card-name{
         font-weight:normal;
@@ -26,8 +26,8 @@
         left:50%;
         margin-left:-160px;
       }
-	  
-	  /* The Modal (background) */
+      
+      /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -41,7 +41,7 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-
+ 
 </style>
 </head>
 <script src="static/js/jquery-1.11.3.min.js"></script>
@@ -58,23 +58,24 @@
     }
     messages = <%-messages%>; //global var
     console.log(messages);
-
+ 
     var socket = io();
-
-
+ 
+ 
     var userId = "<%-userId%>";
     // var hashedId = md5(userId);
-
+ 
     var friend_list = [];
-
+ 
     <% for(var i=0; i<friend_list.length; i++) {%>
-    friend_list.push("<%= friend_list[i] %>");
+		//friend_list.push("<%= friend_list[i] %>");
+		friend_list.push({roomId: "<%= friend_list[i] %>",  userId: "<%= room_name_mapping[i] %>", lastMsg: "", lastMsgTime: ""});
     <% } %>
-
-
+ 
+ 
     for (var i = 0; i < friend_list.length; i++)
-        socket.emit('subscribe', friend_list[i]);
-
+        socket.emit('subscribe', friend_list[i].roomId);
+ 
     socket.on('broadcast', function(data) {
         //document.body.innerHTML = '';
         //document.write(data.description);
@@ -83,35 +84,30 @@
         //check if hash(userId)==hashedId;
         //var hashedId = CryptoJS.MD5(userId).toString();
         var hashedId = md5(userId);
-
+ 
         console.log("input=" + input);
         console.log("hashedID=" + hashedId);
-
-
+ 
         //   alert(input);
         //   alert(hashedId);
 
-
         if (input === hashedId) {
-            if (window.confirm("somebody has added you! join the conversation?")) {
+            if (window.confirm("Somebody has added you! Join the conversation?")) {
                 location.reload();
             }
         }
-
     });
-
-
+ 
     socket.on('userSet', function(data) {
         user = data.username;
     });
-
-
+ 
     function sendMessage() {
         var msg = document.getElementById('message').value;
         var room_id = document.getElementById('room_id').value;
         //console.log("room_id="+room_id);
         // console.log("msg="+msg);
-
+ 
         if (msg) {
             socket.emit('send', {
                 room: room_id,
@@ -119,11 +115,64 @@
                 userId: userId
             });
         }
-
+ 
         $('#message').val('').focus(); // clear the message field and set focus
-
     }
+	
+	function getLastMsg(friend) // roomId
+    {
+        var lastMsg = messages[friend][(messages[friend]).length -1];
+        return lastMsg;
+    }
+    
+	function compare(a,b) {
+		/*
+		var t1 = new Date(a.lastMsgTime);
+		var t2 = new Date(b.lastMsgTime);
+		
+		if (t1 > t2)
+			return -1;
+		if (t1 < t2)
+			return 1;
+		*/	
+	
+		if (a.lastMsgTime > b.lastMsgTime)
+			return -1;
+		if (a.lastMsgTime < b.lastMsgTime)
+			return 1;
+			
+		return 0;
+	}
+	
+    function updateChatRoomList()
+    {	
+		// get last msg info
+		for (var i = 0; i < friend_list.length; i++) { 
+			var lastMsg = getLastMsg(friend_list[i].roomId);
+			friend_list[i].lastMsg = lastMsg["msg"];
+			friend_list[i].lastMsgTime = lastMsg["time"];
+		}
+		
+		// sort array by last msg time
+		friend_list.sort(compare);
+	
+		var htmlString = '<li class="active"><a href="#homeSubmenu" data-toggle="collapse" aria-expanded="true">My Friends</a><ul class="list-unstyled collapse show" id="homeSubmenu">';
+						
+		// update chatroom friend list order and last msg
+		for (var i = 0; i < friend_list.length; i++) {
+			var lastMsgTime = new Date(friend_list[i].lastMsgTime);
+			lastMsgTime = lastMsgTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
+			
+			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">' + friend_list[i].userId;
+			htmlString += '<div class="last-message">' + friend_list[i].lastMsg;
+			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></a></li>';
+		}
+		
+		htmlString += '</ul></li>';
 
+		$('#chatroom-list').html(htmlString);
+    }
+	
     socket.on('newmsg', function(data) {
         //if (user) {
         //console.log(data.user + data.message);
@@ -132,180 +181,178 @@
         newMsg.from = data.userId;
         newMsg.to = "";
         newMsg.msg = data.message;
+		newMsg.time = data.time;
+ 
         //added a field "time" to data; so that the messages can be sorted
         //alert(data.time);
         updateChatArea(newMsg, data.room);
+		updateChatRoomList();
     })
-
+ 
     function updateChatArea(newMsg, room) {
         var curRoom = $("#room_id").val();
-
+ 
         messages[room].push(newMsg);
         //var oldText = $('#room_id option[value="' + room + '"]').text();
         //$('#room_id option[value="' + room + '"]').text(oldText + " new msg!");
         changeChatRoom();
     }
-
+ 
     function selectFriend(friend) {
         $("#room_id").val(friend);
         changeChatRoom();
     }
-
+ 
     function changeChatRoom() {
         var curRoom = $("#room_id").val();
         console.log(curRoom);
         <!--$("#message-container").text(JSON.stringify(messages[curRoom]));-->
-
+ 
         var content = "";
+ 
+        if (typeof messages[curRoom] != 'undefined')
+        {
+			var curDate = '';
+		
+            for (i = 0; i < messages[curRoom].length; ++i) {
+ 
+                msgFrom = messages[curRoom][i]["from"];
+				msgDateTime = new Date(messages[curRoom][i]["time"]);
+                msgDate = msgDateTime.getFullYear() + '/' + (msgDateTime.getMonth() + 1) + '/' + msgDateTime.getDate();
+                msgTime = msgDateTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
+                
+                if (!(curDate === msgDate))
+                {
+                    curDate = msgDate;
+                    content += '<div class="chat_chatboxdate">' +
+                        curDate + '</div>';
+                }
 
-		if (typeof messages[curRoom] != 'undefined')
-		{
-			for (i = 0; i < messages[curRoom].length; ++i) {
-
-				msgFrom = messages[curRoom][i]["from"];
-
-				if (msgFrom == userId) {
-					content += '<div class="chat_chatboxmessage chat_self">' +
-						messages[curRoom][i]["msg"] + '</div>';
-
-				} else {
-					content += '<div class="chat_chatboxmessage">' +
-						messages[curRoom][i]["msg"] + '</div>';
-				}
-			}
-
-			$("#chat-top-title").html($("#room_id option:selected").text());
-
-			$("#message-container").html(content);
-			$("#message-container").animate({
-				scrollTop: $("#message-container")[0].scrollHeight
-			}, 1000);
-
-			console.log(messages[curRoom]);
-		}
-
+                if (msgFrom == userId) {
+                    content += '<div class="chat_chatboxmessage chat_self">' +
+                        messages[curRoom][i]["msg"] + '<span class="chat_chatboxtime">' + msgTime + '</span></div>';
+ 
+                } else {
+                    content += '<div class="chat_chatboxmessage">' +
+                        messages[curRoom][i]["msg"] + '<span class="chat_chatboxtime">' + msgTime + '</span></div>';
+                }
+            }
+ 
+            $("#chat-top-title").html($("#room_id option:selected").text());
+ 
+            $("#message-container").html(content);
+            $("#message-container").animate({
+                scrollTop: $("#message-container")[0].scrollHeight
+            }, 1000);
+ 
+            console.log(messages[curRoom]);
+        }
+ 
     }
-
+ 
 </script>
-
+ 
 <body>
     <!-- user info -->
     <div class="wrapper">
-        <nav id="sidebar" class="active">
+        <nav id="sidebar">
             <div class="sidebar-header">
-               <img src="static/img/logo.png">
+               <img class="nav-logo" src="static/img/logo.svg">
             </div>
-
+ 
             <ul class="list-unstyled components">
                 <p>
                     <%=userId%>
                 </p>
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">My Friends</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <% for(var i=0; i<friend_list.length; i++) {%>
-                            <li>
-                                <a href="javascript:selectFriend('<%= friend_list[i] %>')">
-                                    <%= room_name_mapping[i]%>
-                                </a>
-                            </li>
-                            <% } %>
-                    </ul>
-                </li>
+				<div id="chatroom-list">
+
+				</div>
                 <li>
                     <a href="#">About Circle</a>
-                    <!--
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li><a href="#">Page 1</a></li>
-                            <li><a href="#">Page 2</a></li>
-                            <li><a href="#">Page 3</a></li>
-                        </ul>-->
                 </li>
             </ul>
-
+ 
             <ul class="list-unstyled CTAs">
                 <!--<li><a href="#" class="">Match New Friend!</a></li>-->
-                <!--	<form id="frmSearchNewFriend" action="/new_friend" method="post">
-						<input type="hidden" name="token" value="<%=token %>">
-						<li><input type="submit" class="btn btn-info btn-lg" value="Match New Friend!"></li>
-					</form>
+                <!-- <form id="frmSearchNewFriend" action="/new_friend" method="post">
+                        <input type="hidden" name="token" value="<%=token %>">
+                        <li><input type="submit" class="btn btn-info btn-lg" value="Match New Friend!"></li>
+                    </form>
                 -->
                 <script>
-				// Get the modal
+                // Get the modal
                         function getNewFriends(){
-							var cards = [];
-							
+                            var cards = [];
+                            
                             $.get("/new_friend_list", {
                                 t: $("#userT").val()
                             })
                             .done(function(data) {
+ 
                                 var str="";
                                 for (var i = 0; i < data.length; i++) {
                                     //str = str+"Potential friend "+ i +" 's data:\n" 
                                     //str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
                                     //str=str+"\n\n";
-									
-									cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, data[i].faculty, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));
-									
+                                    cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, data[i].faculty, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
                                 }
                                 
                                 //alert(str) ;
                                 //console.log(str);
-								
-								$('#myModal').show();
-
-								// Render cards
-								Tindercardsjs.render(cards, $('#friend-card'), function (event) {
-								  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
-								  console.log(event.card);
-								});
+                                
+                                $('#myModal').show();
+ 
+                                // Render cards
+                                Tindercardsjs.render(cards, $('#friend-card'), function (event) {
+                                  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
+                                  console.log(event.card);
+                                });
                             });
                         }
-						
-
+                        
+ 
                 </script>
                 <form id="frmSearchNewFriend" action="/new_friend" method="post">
                     <input type="hidden" id="userT" name="token" value="<%=token %>">
                     <li><input type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friend!"></li>
                 </form>
             </ul>
-
+ 
             <select style="display: none;" id="room_id" onchange="changeChatRoom()">
                 <% for(var i=0; i<friend_list.length; i++) {%>
                      <option value="<%= friend_list[i] %>">
                         <!--<%= room_name_mapping[i]+" "+friend_list[i] %>-->
-						<%= room_name_mapping[i]%>
+                        <%= room_name_mapping[i]%>
                      </option>
                 <% } %>
             </select>
         </nav>
-
+ 
         <div id="loader" style="display: none;"></div>
         <div id="loader-text" style="display: none;">Searching...</div>
-        <div id="content" class="active">
+        <div id="content">
             <div class="chat-top">
                 <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-				<i class="glyphicon glyphicon-align-left"></i>
-			</button>
-
+                <i class="glyphicon glyphicon-align-left"></i>
+            </button>
+ 
                 <div id="chat-top-title" class="chat-top__title chat-top__title--messaging" style="display: block;"></div>
             </div>
-			<!-- The Modal -->
-			<div id="myModal" class="modal">
-			  <!-- Modal content -->
-			  <span class="close" id="closeModal">&times;</span>
-			  <div class="modal-content">
-				<div id="friend-card"></div>
-			  </div>
-
-			</div>
-
-
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+              <!-- Modal content -->
+              <span class="close" id="closeModal">&times;</span>
+              <div class="modal-content">
+                <div id="friend-card"></div>
+              </div>
+ 
+            </div>
+ 
+ 
             <div class="chat-canvas" id="message-container">
             </div>
-
-            <div id="chat-input" class="chat-input active">
+ 
+            <div id="chat-input" class="chat-input">
                 <div class="chat-input-text">
                     <textarea class="chat-input-text__field" id="message" autofocus></textarea>
                 </div>
@@ -313,13 +360,14 @@
             </div>
         </div>
     </div>
-
-
+ 
+ 
     <script>
         $(document).ready(function() {
             $('#frmSearchNewFriend').submit(function(event) {
                 event.preventDefault();
                 $('#sidebar, #content, #chat-input').toggleClass('active');
+ 
                 var form = this;
                 document.getElementById("content").style.display = "none";
                 document.getElementById("loader").style.display = "block";
@@ -331,30 +379,31 @@
                     form.submit();
                 }, 3000); // in milliseconds
             });
-
+			
+			updateChatRoomList();
+ 
             $('#sidebarCollapse').on('click', function() {
                 $('#sidebar, #content, #chat-input').toggleClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
-
-
+ 
             $('#btnSendMsg').on('click', function() {
                 sendMessage();
             });
-
+ 
             changeChatRoom();
             console.log("roomId=" + document.getElementById('room_id').value);
-			
-			// When the user clicks on <span> (x), close the modal
-			$('#closeModal').on('click', function() {
-				$('#friend-card').empty(); 
-				$('#myModal').hide();
-            });
+            
+            // When the user clicks on <span> (x), close the modal
+            $('#closeModal').on('click', function() {
+                $('#friend-card').empty(); 
+                $('#myModal').hide();
+            }); 
         });
 
     </script>
-
+ 
 </body>
-
+ 
 </html>

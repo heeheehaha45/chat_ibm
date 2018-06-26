@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
@@ -17,7 +17,7 @@
 
 
 <body>
-<section class="color-banner">
+	<section class="color-banner">
 
     <!-- user info -->
     <div class="container">
@@ -25,7 +25,7 @@
             <!-- top -->
             <div class="index-section index-top">
                 <div class="text-sort--center">
-                    <img src="static/img/logo.png">
+                    <img src="static/img/logo.svg" class="index-logo">
 					<div class="index-title">Meet friends with the same email domain!</div>
                 </div>
             </div>
@@ -39,9 +39,9 @@
                
                 <form action="/auth" method="post">
                     <div>
-                        <input type="text" class="index-email" placeholder="Enter Your Email" id="email" name="email" value="">
+                        <input type="text" class="index-textbox index-email" placeholder="Enter Your Email" id="email" name="email" value="">
                     </div>    
-                        <input type="password" class="index-password" placeholder="Enter Your Password" id="password" name="password" value="">
+                        <input type="password" class="index-textbox index-password" placeholder="Enter Your Password" id="password" name="password" value="">
                     <div>
                     </div>
                     <div>
@@ -52,12 +52,9 @@
             </div>
 
         </div>
-
-
-
             <div id="error-container" class="alert alert-danger" role="alert" style="display:none"></div>
     </div>
-	</section>
+</section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
@@ -35,30 +35,31 @@
 
                 <form action="/new_user" method="post">
                    <div>
-                        <input type="text" class="index-user" placeholder="Enter Your nickname" id="name" name="name" value="">
+                        <input type="text" class="index-textbox index-user" placeholder="Enter your Nickname" id="name" name="name" value="">
                     </div>
                     <div>
-                        <input type="text" class="index-email" placeholder="Enter Your Email" id="email" name="email" value="">
+                        <input type="text" class="index-textbox index-email" placeholder="Enter your Email" id="email" name="email" value="">
                     </div>
-                    <input type="password" class="index-password" placeholder="Enter Your password" id="password" name="password" value="">
+                    <input type="password" class="index-textbox index-password" placeholder="Enter your Password" id="password" name="password" value="">
                     <div>
-                        <input type="text" class="index-interest" placeholder="Enter Your Interest" id="interest" name="interest" value="">
+                        <input type="text" class="index-textbox index-interest" placeholder="Enter your Interest" id="interest" name="interest" value="">
                     </div>
 
                     <div style="margin: 1rem;">
                         <div>
                             <div class="panel panel-info" style="width: 29rem; margin: 0 auto;">
                                 <div class="panel-heading">
-                                    <h4>If you are in university, what is your faculty? </h4>
+                                    <h4>If you are a university student, what is your faculty?</h4>
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="index-faculty" placeholder="your faculty" id="faculty" name="faculty" value="">
+                        <input type="text" class="index-textbox index-faculty" placeholder="Enter your Faculty" id="faculty" name="faculty" value="">
 
                     </div>
 
                     <div>
                         <button type="submit" class="index-button" id="btn_start" onclick="">Sign Up</button>
+						<button type="button" class="index-button" id="btn_start" onclick="location.href='/login'">Back</button>
                     </div>
                 </form>
             </div>

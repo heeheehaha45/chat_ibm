@@ -714,7 +714,7 @@ label.chat-input-file.file-upload {
   max-height: 40px;
   font-family: 'Lato';
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1.1em;
   color: #8f9fae;
   overflow-y: auto;
   resize: none;
@@ -1370,6 +1370,27 @@ label.chat-input-file.file-upload {
   background: #328fe6;
 }
 
+.chat_chatboxdate {
+	clear: both;
+	border: none;
+	border-radius: 30px;
+    color: #3F62A1;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 12px 0px 5px 0px;
+    position: relative;
+    float: initial;
+    text-align: center;
+}
+
+.chat_chatboxtime {
+    text-align: right;
+	padding: 0px 0px 0px 10px;
+	font-size: 0.65em;
+	font-style: italic;
+	color: #78909c;
+}
 
 .chat_chatboxmessage,.chat_istypingbox {
  background:#c0ebe7;
@@ -1420,7 +1441,7 @@ label.chat-input-file.file-upload {
 .chat_chatboxmessage:not(.chat_self),.chat_istypingbox {
  color:#000;
  font-family:inherit;
- font-size:15px;
+ font-size:1.1em;
  font-weight: normal;
  word-break:normal;
  margin:6px 5px 5px 12px;
@@ -1436,7 +1457,7 @@ label.chat-input-file.file-upload {
 }
 .chat_chatboxmessage.chat_self {
  font-family:inherit;
- font-size:15px ;
+ font-size:1.1em;
  font-weight: normal;
  border-radius:25px;
  padding:11px 18px;
@@ -1479,7 +1500,7 @@ label.chat-input-file.file-upload {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 10px 40px;
     background: #7391C8;
 }
 
@@ -1500,14 +1521,18 @@ label.chat-input-file.file-upload {
     display: block;
 }
 #sidebar ul li a:hover {
-    color: #21C2CA;
-    background: #fff;
+    color: #D7DFEF;
+    background: #3F62A1;
+	text-decoration: none;
 }
 
 #sidebar ul li > a, a[aria-expanded="true"] {
     color: #fff;
 	font-size: 1.4em;
     background: #7391C8;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 
@@ -1530,7 +1555,7 @@ a[aria-expanded="true"]::before {
 
 ul ul a {
     font-size: 1.2em !important;
-    padding-left: 30px !important;
+    padding-left: 20px !important;
     background: #7391C8;
 }
 
@@ -1545,10 +1570,7 @@ ul.CTAs a {
     border-radius: 5px;
     margin-bottom: 5px;
 }
-a.download {
-    background: #fff;
-    color: #21C2CA;
-}
+
 a.article, a.article:hover {
     background: #7391C8 !important;
     color: #fff !important;
@@ -1682,4 +1704,22 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
+}
+
+.link-btn:hover, .link-btn:focus {
+	text-decoration: none;
+}
+
+.last-message {
+	font-size: 0.8em;
+	color: #D7DFEF;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.last-message-time {
+	font-size: 0.8em;
+	color: #D7DFEF;
+	float: right;
 }

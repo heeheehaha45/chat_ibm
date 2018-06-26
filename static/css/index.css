@@ -48,112 +48,47 @@ input, button {
   text-align: center;
 }
 
-.index-nickname:focus,
-.index-nickname:hover,
-.index-nickname:active {
+
+.index-textbox:focus,
+.index-textbox:hover,
+.index-textbox:active {
   border: 2px solid #32C5E6;
 }
 
-.index-userid:focus,
-.index-userid:hover,
-.index-userid:active {
-  border: 2px solid #32C5E6;
-}
-
-.index-user:focus, .index-email:focus, .index-password:focus, .index-interest:focus,
-.index-user:hover, .index-email:hover, .index-password:hover, .index-interest:hover,
-.index-user:hover, .index-email:hover, .index-password:active, .index-interest:active {
-  border: 2px solid #32C5E6;
+.index-textbox {
+  padding: 0 10px 0 44px;
+  margin: 5px 0 0 0;
+  width: 290px;
+  height: 48px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-family: 'Lato';
+  font-weight: 400;
+  font-size: 16px;
+  color: #555555;
+  position:relative;
 }
 
 .index-user {
-  padding: 0 10px 0 44px;
-  margin: 5px 0 0 0;
   background: url("../img/icon-user.svg") #fff no-repeat 12px;
-  width: 290px;
-  height: 48px;
-  border: 2px solid #fff;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  font-family: 'Lato';
-  font-weight: 400;
-  font-size: 16px;
-  color: #555555;
-  position:relative;
 }
 
 .index-email {
-  padding: 0 10px 0 44px;
-  margin: 5px 0 0 0;
   background: url("../img/icon-email.svg") #fff no-repeat 12px;
-  width: 290px;
-  height: 48px;
-  border: 2px solid #fff;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  font-family: 'Lato';
-  font-weight: 400;
-  font-size: 16px;
-  color: #555555;
-  position:relative;
 }
 
 .index-password {
-  padding: 0 10px 0 44px;
-  margin: 5px 0 0 0;
   background: url("../img/icon-key.svg") #fff no-repeat 12px;
-  width: 290px;
-  height: 48px;
-  border: 2px solid #fff;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  font-family: 'Lato';
-  font-weight: 400;
-  font-size: 16px;
-  color: #555555;
-  position:relative;
 }
 
 .index-interest {
-  padding: 0 10px 0 44px;
-  margin: 5px 0 0 0;
   background: url("../img/icon-heart.svg") #fff no-repeat 12px;
-  width: 290px;
-  height: 48px;
-  border: 2px solid #fff;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  font-family: 'Lato';
-  font-weight: 400;
-  font-size: 16px;
-  color: #555555;
-  position:relative;
 }
 
 .index-faculty {
-  padding: 0 10px 0 44px;
-  margin: 5px 0 0 0;
   background: url("../img/icon-college.svg") #fff no-repeat 12px;
-  width: 290px;
-  height: 48px;
-  border: 2px solid #fff;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  font-family: 'Lato';
-  font-weight: 400;
-  font-size: 16px;
-  color: #555555;
-  position:relative;
-}
-
-.index-userid {
-  margin-right: 120px;
-  margin-top: 40px;
 }
 
 ::-webkit-input-placeholder { /* WebKit browsers */
@@ -227,19 +162,12 @@ input, button {
 }
 
 .color-banner {
-    background: linear-gradient(to top, #3F62A1 0%, #3F62A1 30%, #7391C8 100%);
+	background-image: url("../img/banner-shape.png"), linear-gradient(to top, #fff 0%, #3F62A1 20%, #3F62A1 30%, #7391C8 100%);
 	background-repeat: no-repeat;
-	height:100vh;
+	background-position: center bottom;
+	height: 600px;
 }
 
-.color-banner:before {
-    content: '';
-    background-image: url("../img/banner-shape.png");
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    position: absolute;
-    width: 100%;
-    height: 35em;
-    left: 0;
-	bottom: 0;
+.index-logo {
+	height: 150px;
 }
