@@ -3,28 +3,27 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/chat.css">
-    <title>Welcome</title>
+    <title>Circle - Edit Profile Pic</title>
 </head>
 
 
 
-<body class="sample-background">
+<body>
+	<section class="color-banner">
     <!-- user info -->
     <div class="container">
         <div class="row">
             <!-- top -->
             <div class="index-section index-top">
                 <div class="text-sort--center">
-                    <img src="static/img/logo.png">
-                    <label class="index-title">Sign Up</label>
+                    <label class="index-title">Edit Profile Pic</label>
                 </div>
             </div>
         </div>
@@ -32,22 +31,26 @@
         <!-- user info -->
         <div class="row">
             <div class="index-section index-input">
-                <h2>Update profile picture</h2>
                 <form action='/update_profile' method='post' enctype='multipart/form-data'>
-                    <div class="input-group col-md-4">
+                    <div class="input-group">
                         <input type='hidden' name='picId' class="form-control" value="<%=picId%>" />
                        
                         <input type='file' name='file' class="form-control" />
                         <div class="input-group-btn">
-                            <input class="btn btn-default" type='submit' value='Upload' />
+                            <input class="btn btn-info" type='submit' value='Upload' />
                       </div>
                     </div>
                 </form>
+				
+					<div>
+						<button type="button" class="index-button" id="btn_back" onclick="">Back</button>
+                    </div>
             </div>
         </div>
 
       
     </div>
+	</section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
 

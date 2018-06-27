@@ -241,9 +241,13 @@
             $("#chat-top-title").html($("#room_id option:selected").text());
  
             $("#message-container").html(content);
-            $("#message-container").animate({
-                scrollTop: $("#message-container")[0].scrollHeight
-            }, 1000);
+			
+			
+            //$("#message-container").animate({
+            //    scrollTop: $("#message-container")[0].scrollHeight
+            //}, 1000);
+			
+			$("#message-container").scrollTop($("#message-container")[0].scrollHeight);
  
             console.log(messages[curRoom]);
         }
@@ -257,12 +261,13 @@
     <div class="wrapper">
         <nav id="sidebar">
             <div class="sidebar-header">
-               <img class="nav-logo" src="static/img/logo.svg">
+               <img id="nav-logo" class="pointer" src="static/img/logo.svg">
             </div>
  
             <ul class="list-unstyled components">
                 <p>
-                    <%=userId%>
+                   <img id="my-avatar" src="<%= picURL %>" class="img-thumbnail pointer">
+				   <label id="my-id" class="pointer"><%=userId%></label>
                 </p>
 				<div id="chatroom-list">
 
@@ -313,16 +318,14 @@
  
                 </script>
                 
-                <img src="<%= picURL %>"  height="42" width="42">
-                
-                 <form id="" action="/update_profile_page" method="GET">
+                 <form id="frmUpdateMyAvatar" action="/update_profile_page" method="GET">
                     <input type="hidden"  name="picId" value="<%= picId%>">
-                    <li><input type="submit" class="btn btn-info btn-lg" value="Change profile pic"></li>
+                    <!--<li><input type="submit" class="btn btn-info btn-lg" value="Change profile pic"></li>-->
                  </form>
                  
-                  <form id="" action="/update_profile_data_page" method="GET">
+                  <form id="frmUpdateMyInfo" action="/update_profile_data_page" method="GET">
                     <input type="hidden"  name="token" value="<%= token%>">
-                    <li><input type="submit" class="btn btn-info btn-lg" value="Change profile data"></li>
+                    <!--<li><input type="submit" class="btn btn-info btn-lg" value="Change profile data"></li>-->
                  </form>
                 
                 
@@ -396,11 +399,19 @@
 			
 			updateChatRoomList();
  
-            $('#sidebarCollapse').on('click', function() {
+            $('#sidebarCollapse, #nav-logo').on('click', function() {
                 $('#sidebar, #content, #chat-input').toggleClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
+			
+			$("#my-avatar").click(function() {
+				$("#frmUpdateMyAvatar").submit();
+			});
+			
+			$("#my-id").click(function() {
+				$("#frmUpdateMyInfo").submit();
+			});
  
             $('#btnSendMsg').on('click', function() {
                 sendMessage();
@@ -413,7 +424,13 @@
             $('#closeModal').on('click', function() {
                 $('#friend-card').empty(); 
                 $('#myModal').hide();
-            }); 
+            });
+			
+			// When the user clicks on <span> (x), close the modal
+            $('#closeModal').on('click', function() {
+                $('#friend-card').empty(); 
+                $('#myModal').hide();
+            });
         });
 
     </script>

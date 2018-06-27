@@ -1723,3 +1723,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	color: #D7DFEF;
 	float: right;
 }
+
+#my-avatar {
+	height: 60px;
+	width: 60px;
+	margin-right: 10px;
+}
+
+.pointer {
+	cursor: pointer;
+}

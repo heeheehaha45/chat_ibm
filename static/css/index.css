@@ -9,7 +9,7 @@ input, button {
 
 .index-section {
  /*min-width: 624px;*/
-  margin: 0px auto;
+  margin: 10px 20px;
   /*height: 70px;*/
 }
 
@@ -85,6 +85,10 @@ input, button {
 
 .index-interest {
   background: url("../img/icon-heart.svg") #fff no-repeat 12px;
+}
+
+.index-info {
+  background: url("../img/icon-info.svg") #fff no-repeat 12px;
 }
 
 .index-faculty {

@@ -3,46 +3,48 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/chat.css">
-    <title>Welcome</title>
+    <title>Circle - Edit Profile</title>
 </head>
 
 
 
-<body class="sample-background">
+<body>
+	<section class="color-banner">
     <!-- user info -->
     <div class="container">
         <div class="row">
             <!-- top -->
             <div class="index-section index-top">
                 <div class="text-sort--center">
-                    <img src="static/img/logo.png">
-                    <label class="index-title">Sign Up</label>
+                    <label class="index-title">Edit Profile</label>
                 </div>
             </div>
         </div>
-
         <!-- user info -->
         <div class="row">
-            <div class="index-section index-input">
-                <h2>Update profile data</h2>
+		    <div class="index-section index-input">
                 <form action='/update_profile_data' method='post'>
-                    <div class="input-group col-md-4">
                         <input type='hidden' name='token' class="form-control" value="<%=token%>" />
-                       
-                        nickname: <input type="text" name="nickname" value="<%=nickname_old%>"><br>
-                       interest: <input type="text" name="interest" value="<%=interest_old%>"><br>
-                       description: <input type="text" name="description" value="<%=description_old%>"><br>
-                        <div class="input-group-btn">
-                            <input class="btn btn-default" type='submit' value='update' />
-                        </div>
+                    <div>
+                        <input type="text" class="index-textbox index-user" placeholder="Enter your nickname" id="name" name="nickname" value="<%=nickname_old%>">
+                    </div>
+					<div>
+                        <input type="text" class="index-textbox index-interest" placeholder="Enter your interest" id="interest" name="interest" value="<%=interest_old%>">
+                    </div>
+                     <div>
+                        <input type="text" class="index-textbox index-info" placeholder="Describe yourself" id="description" name="description" value="<%=description_old%>">
+                    </div>
+
+					<div>
+                        <button type="submit" class="index-button" id="btn_start" onclick="">Update</button>
+						<button type="button" class="index-button" id="btn_back" onclick="">Back</button>
                     </div>
                 </form>
             </div>
@@ -50,6 +52,7 @@
 
       
     </div>
+	</section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
 
