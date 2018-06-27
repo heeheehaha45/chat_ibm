@@ -230,9 +230,9 @@ function blah() {
 app.get("/update_profile_data_page", function (req, res) {
 
     var token = req.query.token;
-    var found=false;
+    var found = false;
     var user;
-    
+
     if (!mydb) {
         //response.json(names);
         return;
@@ -243,7 +243,7 @@ app.get("/update_profile_data_page", function (req, res) {
     }, function (err, body) {
         if (!err) {
             var found = false;
-          
+
             body.rows.forEach(function (row) {
                 if (row.doc.type === "user" && row.doc.token === token) {
                     user = row.doc;
@@ -255,22 +255,22 @@ app.get("/update_profile_data_page", function (req, res) {
 
             if (found) {
                 user.description;
-                
-                
-                user.nickname ;
+
+
+                user.nickname;
                 user.interest;
                 user.description;
                 //user.pw="123";
-               
+
                 res.render('pages/update_profile_data_page', {
-                    token: req.query.token ,
-                    nickname_old:user.nickname ,
-                    interest_old:user.interest ,
-                    description_old:user.description
+                    token: req.query.token,
+                    nickname_old: user.nickname,
+                    interest_old: user.interest,
+                    description_old: user.description
                 });
-                
-                
-                
+
+
+
             } else {
                 res.render('pages/error');
 
@@ -280,9 +280,9 @@ app.get("/update_profile_data_page", function (req, res) {
             console.log(err);
         }
     });
-    
-    
-    
+
+
+
 
 
 });
@@ -300,13 +300,13 @@ app.get("/update_profile_page", function (req, res) {
 });
 
 
-app.post("/update_profile_data", urlencodedParser,function (req, res) {
-    
+app.post("/update_profile_data", urlencodedParser, function (req, res) {
+
     var token = req.body.token;
     var nickname = req.body.nickname;
     var interest = req.body.interest;
     var description = req.body.description;
-    
+
     var user;
     if (!mydb) {
         //response.json(names);
@@ -318,7 +318,7 @@ app.post("/update_profile_data", urlencodedParser,function (req, res) {
     }, function (err, body) {
         if (!err) {
             var found = false;
-          
+
             body.rows.forEach(function (row) {
                 if (row.doc.type === "user" && row.doc.token === token) {
                     user = row.doc;
@@ -330,8 +330,8 @@ app.post("/update_profile_data", urlencodedParser,function (req, res) {
 
             if (found) {
                 user.nickname = nickname;
-                user.interest= interest;
-                user.description=description;
+                user.interest = interest;
+                user.description = description;
                 //user.pw="123";
                 mydb.insert(user, function (err, body, header) {
                     if (err) {
@@ -340,7 +340,7 @@ app.post("/update_profile_data", urlencodedParser,function (req, res) {
                     }
                     res.redirect('/chatroom?t=' + token);
                 });
-                
+
             } else {
                 res.render('pages/error');
 
@@ -350,10 +350,10 @@ app.post("/update_profile_data", urlencodedParser,function (req, res) {
             console.log(err);
         }
     });
-    
-    
-    
-    
+
+
+
+
 });
 
 
@@ -1204,18 +1204,18 @@ app.get('/new_friend_select', urlencodedParser, function (req, res) {
 
                 newRoom.type = "room";
                 newRoom.roomId = concate;
-                
-                var time=new Date().toUTCString();
-                
+
+                var time = new Date().toUTCString();
+
                 newRoom.history = [{
                     "from": user.email,
                     "to": newFriendDoc.email,
                     "msg": "I have added you. Nice to meet you!",
-                    "time" : time,
-                    "hasRead" : false,
-                    "id" : randomString()
-                    
-                    
+                    "time": time,
+                    "hasRead": false,
+                    "id": randomString()
+
+
                 }];
                 mydb.insert(newRoom, function (err, body, header) {
                     if (err) {
@@ -1413,6 +1413,75 @@ app.post('/new_friend', urlencodedParser, function (req, res) {
 });
 
 
+
+//input:friend email array
+//return: friend profile array [{nickname,picId}, {nicknameB,picIdB}, ...]
+function friendListToProfile(friendEmailArr) {
+
+    var result = [{
+        "abc": "def"
+    }];
+
+    if (!mydb) {
+        //response.json(names);
+        console.log("err!");
+        return;
+    }
+
+    mydb.list({
+        include_docs: true
+    }, function (err, body) {
+        if (!err) {
+            console.log("inside");
+            // friendEmailArr.forEach(function (friendEmail) {
+            for (var i = 0; i < friendEmailArr.length; i++) {
+                console.log("inside loop");
+
+                var friendEmail = friendEmailArr[i];
+                console.log(friendEmail);
+
+                body.rows.forEach(function (row) {
+                    if (row.doc.type === "user" && row.doc.email === friendEmail) {
+
+                        //friend is found
+
+                        var entry = new Object();
+                        entry.nickname = row.doc.name;
+                        entry.picId = row.doc.picId;
+                        result.push(entry);
+
+
+                    }
+                });
+
+            }
+
+            return "hello";
+
+        } //endif
+        else {
+            console.log(err);
+        }
+
+
+
+
+    });
+
+}
+
+app.get('/testFriendListToProfile', function (req, res) {
+    var friend_list = [
+    "user1@def.com",
+    "user5@def.com"
+  ];
+
+    console.log("testresult=" + friendListToProfile(friend_list));
+
+
+
+});
+
 app.get('/chatroom', function (req, res) {
     console.log("chatroom");
     //get token
@@ -1426,7 +1495,7 @@ app.get('/chatroom', function (req, res) {
     var friend_list = [];
     var room_name_mapping = [];
     var messages = new Object();
-    
+
     var picId;
     ///////////////
 
@@ -1504,6 +1573,44 @@ app.get('/chatroom', function (req, res) {
                 }
 
             });
+              
+            
+           
+       
+            //loop through to find profile from friendlist
+            var emailToProfileList=new Object();
+         //   console.log("_friend_list="+_friend_list);
+            body.rows.forEach(function (row) {
+
+                if (row.doc.type === "user") {
+
+                    /////////////////////////    
+                    _friend_list.forEach(function (friendEmail) {
+
+                        if (row.doc.email === friendEmail) {
+
+                            //friend is found
+
+                            var entry = new Object();
+                            entry.nickname = row.doc.name;
+                            entry.picId = "/preview?picId=" +row.doc.picId;
+                            emailToProfileList[friendEmail]=entry;
+
+
+                        }
+
+
+                    });
+                }
+
+            });
+            
+            
+            //////////
+
+            console.log("\n\n\nemailToProfileList="+JSON.stringify(emailToProfileList));
+
+
 
             console.log("messages=" + JSON.stringify(messages));
 
@@ -1513,13 +1620,19 @@ app.get('/chatroom', function (req, res) {
                 res.render('pages/chatroom', {
                     userId: userId,
                     token: token,
+                    //friend_list: friend_list,
                     friend_list: friend_list,
+
                     room_name_mapping: room_name_mapping,
+                    //modfiy here
+                    emailToProfileList:JSON.stringify(emailToProfileList),
+                    
+                    
                     // messages:JSON.stringify(messages).replace('\\"',"'")
                     //    messages:JSON.stringify(messages).replace('\\"',"\\\"")
                     messages: JSON.stringify(messages),
                     picId: picId,
-                    picURL: "/preview?picId="+picId
+                    picURL: "/preview?picId=" + picId
                 });
 
             } else {
