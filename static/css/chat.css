@@ -624,7 +624,7 @@ a.hover:hover {
 }
 
 #chat-input {
-  width: calc(100% - 250px);
+  width: calc(100% - 300px);
   padding: 5px 10px 5px 10px;
   background: #fff;
   position: fixed;
@@ -868,7 +868,7 @@ label.chat-input-file.file-upload {
 }
 
 .modal-open-chat-top__search {
-  width: 250px;
+  width: 300px;
   height: 32px;
   padding: 0 34px 0 12px;
   background: url("../img/icon-search.svg") no-repeat 220px center #fff;
@@ -1481,8 +1481,8 @@ label.chat-input-file.file-upload {
     SIDEBAR STYLE
 ----------------------------------------------------- */
 #sidebar {
-    min-width: 250px;
-	max-width: 250px;
+    min-width: 300px;
+	max-width: 300px;
 	height: 100%;
     position: fixed;
     top: 0;
@@ -1496,16 +1496,16 @@ label.chat-input-file.file-upload {
 }
 
 #sidebar.active {
-    margin-left: -250px;
+    margin-left: -300px;
 }
 
 #sidebar .sidebar-header {
-    padding: 10px 40px;
+    padding: 10px 60px;
     background: #7391C8;
 }
 
 #sidebar ul.components {
-    padding: 20px 0;
+    padding: 5px 0;
     /*border-bottom: 1px solid #47748b;*/
 }
 
@@ -1581,7 +1581,7 @@ a.article, a.article:hover {
     CONTENT STYLE
 ----------------------------------------------------- */
 #content {
-    width: calc(100% - 250px);
+    width: calc(100% - 300px);
     min-height: 100vh;
     transition: all 0.3s;
     position: absolute;
@@ -1732,4 +1732,20 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .pointer {
 	cursor: pointer;
+}
+
+.nav-friendlist-row {
+	display: inline-block;
+	width: 210px;
+}
+
+.nav-friend-avatar {
+	float: left;
+	margin-right: 10px;
+	height: 50px;
+	width: 50px;
+}
+
+#matchNewFriends {
+	margin-left: 30px;
 }

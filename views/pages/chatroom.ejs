@@ -66,6 +66,8 @@
     // var hashedId = md5(userId);
  
     var friend_list = [];
+	var emailToProfileList=<%- emailToProfileList %>;
+    alert (JSON.stringify(emailToProfileList));
  
     <% for(var i=0; i<friend_list.length; i++) {%>
 		//friend_list.push("<%= friend_list[i] %>");
@@ -119,6 +121,11 @@
         $('#message').val('').focus(); // clear the message field and set focus
     }
 	
+	function getProfileByUserId(userId) // email
+	{
+		return emailToProfileList[userId];
+	}
+	
 	function getLastMsg(friend) // roomId
     {
         var lastMsg = messages[friend][(messages[friend]).length -1];
@@ -163,9 +170,10 @@
 			var lastMsgTime = new Date(friend_list[i].lastMsgTime);
 			lastMsgTime = lastMsgTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
 			
-			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">' + friend_list[i].userId;
+			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">'
+			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '"><div class="nav-friendlist-row">' + getProfileByUserId(friend_list[i].userId).nickname;
 			htmlString += '<div class="last-message">' + friend_list[i].lastMsg;
-			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></a></li>';
+			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></div></a></li>';
 		}
 		
 		htmlString += '</ul></li>';
@@ -237,15 +245,11 @@
                         messages[curRoom][i]["msg"] + '<span class="chat_chatboxtime">' + msgTime + '</span></div>';
                 }
             }
+			
  
-            $("#chat-top-title").html($("#room_id option:selected").text());
+            $("#chat-top-title").html(getProfileByUserId($("#room_id option:selected").text().trim()).nickname); //+ $("#room_id option:selected").text());
  
             $("#message-container").html(content);
-			
-			
-            //$("#message-container").animate({
-            //    scrollTop: $("#message-container")[0].scrollHeight
-            //}, 1000);
 			
 			$("#message-container").scrollTop($("#message-container")[0].scrollHeight);
  
@@ -278,12 +282,6 @@
             </ul>
  
             <ul class="list-unstyled CTAs">
-                <!--<li><a href="#" class="">Match New Friend!</a></li>-->
-                <!-- <form id="frmSearchNewFriend" action="/new_friend" method="post">
-                        <input type="hidden" name="token" value="<%=token %>">
-                        <li><input type="submit" class="btn btn-info btn-lg" value="Match New Friend!"></li>
-                    </form>
-                -->
                 <script>
                 // Get the modal
                         function getNewFriends(){
@@ -331,7 +329,7 @@
                 
                 <form id="frmSearchNewFriend" action="/new_friend" method="post">
                     <input type="hidden" id="userT" name="token" value="<%=token %>">
-                    <li><input type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friend!"></li>
+                    <li><input id="matchNewFriends" type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friends!"></li>
                 </form>
             </ul>
  
@@ -381,9 +379,6 @@
  
     <script>
         $(document).ready(function() {
-            
-            var emailToProfileList=<%- emailToProfileList %>;
-            alert (JSON.stringify(emailToProfileList));
             
             $('#frmSearchNewFriend').submit(function(event) {
                 event.preventDefault();
