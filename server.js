@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var md5 = require("blueimp-md5");
 
+var os = require('os');
+
 var bodyParser = require('body-parser');
 
 const nodemailer = require('nodemailer');
@@ -18,10 +20,10 @@ formidable = require('formidable'),
     path = require('path');
 
 
-var domain = "http://localhost:3000";
+//var domain = "http://localhost:3000";
+var domain = "https://getstartednode-smart-grysbok.mybluemix.net";
 
-
-
+console.log("domain="+os.hostname());
 
 
 
@@ -91,7 +93,21 @@ app.get('/', function (req, res) {
 
 
 app.get('/login', function (req, res) {
-    res.render('pages/login');
+    var info = req.query.info;
+    if (typeof info != 'undefined')
+        info = info;
+
+    else
+        info = "";
+
+    res.render('pages/login', {
+        info: info
+
+    });
+
+
+
+
 
 });
 
@@ -292,8 +308,8 @@ app.get("/update_profile_page", function (req, res) {
 
 
     res.render('pages/update_profile_page', {
-        picId: req.query.picId
-
+        picId: req.query.picId,
+        err: req.query.err
     });
 
 
@@ -372,7 +388,19 @@ app.post("/update_profile", function (req, res) {
     var id;
     var rev;
     var form = new formidable.IncomingForm();
+    //The default size is 200MB.  form.maxFileSize = 200 * 1024 * 1024;
+    form.maxFileSize = 2 * 1024 * 1024;
+    console.log("form.maxFileSize=" + form.maxFileSize);
+
     form.parse(req, function (err, fields, files) {
+        picId = fields.picId;
+        if (err) {
+            console.log(err);
+            res.redirect('/update_profile_page?picId=' + picId + "&err=fileSize");
+            return;
+
+        }
+
         // `file` is the name of the <input> field of type `file`
         var old_path = files.file.path,
             file_size = files.file.size,
@@ -383,7 +411,17 @@ app.post("/update_profile", function (req, res) {
         index = old_path.lastIndexOf('/') + 1,
             file_name = old_path.substr(index);
         console.log(file_ext);
-        picId = fields.picId;
+
+        if (file_ext !== "jpg" && file_ext !== "png" && file_ext !== "gif") {
+            console.log("file is not picture type");
+            //error
+            res.redirect('/update_profile_page?picId=' + picId + "&err=picType");
+            return;
+        }
+
+
+
+
 
         //delete the old attachment
         (function () {
@@ -400,10 +438,8 @@ app.post("/update_profile", function (req, res) {
                 if (!err) {
                     var found = false;
 
-                    //fetch old friend list
                     body.rows.forEach(function (row) {
                         if (row.doc._id === picId) {
-                            //user exist already
                             found = true;
                             rev = row.doc._rev;
                         }
@@ -431,8 +467,8 @@ app.post("/update_profile", function (req, res) {
                                     console.log(err);
 
                                 res.render('pages/update_profile_page', {
-                                    picId: picId
-
+                                    picId: picId,
+                                    err: ""
                                 });
 
                             })
@@ -441,7 +477,29 @@ app.post("/update_profile", function (req, res) {
                         /////////
 
                     } else {
-                        res.redirect('/error');
+                        //***change to upload file if the file is not found
+
+                        fs.createReadStream(old_path).pipe(
+
+                            mydb.attachment.insert(picId, 'profile_pic', null, 'image/' + file_ext, {
+                                _rev: rev
+                            }, function (err, body) {
+
+                                if (!err)
+                                    console.log(body);
+                                else
+                                    console.log(err);
+
+                                res.render('pages/update_profile_page', {
+                                    picId: picId,
+                                    err: ""
+
+                                });
+
+                            })
+
+                        );
+                        //res.redirect('/error');
                     }
 
                 } //endif
@@ -467,6 +525,8 @@ app.post("/upload_process", function (req, res) {
     var id;
     var rev;
     var form = new formidable.IncomingForm();
+
+
     form.parse(req, function (err, fields, files) {
         // `file` is the name of the <input> field of type `file`
         var old_path = files.file.path,
@@ -491,8 +551,10 @@ app.post("/upload_process", function (req, res) {
                 else
                     console.log(err);
 
-                res.render('pages/login');
+                res.render('pages/login', {
+                    info: ""
 
+                });
             })
 
         );
@@ -513,6 +575,8 @@ app.post("/upload", function (req, res) {
     stream.on("finish", function () { response.redirect("/") });
     */
     var form = new formidable.IncomingForm();
+    console.log("form.maxFields=" + form.maxFields);
+
     form.parse(req, function (err, fields, files) {
         // `file` is the name of the <input> field of type `file`
         var old_path = files.file.path,
@@ -599,7 +663,10 @@ app.get('/upload_old', function (req, res) {
         });
 
 
-    res.render('pages/login');
+    res.render('pages/login', {
+        info: ""
+
+    });
 
 });
 
@@ -687,7 +754,10 @@ app.get('/mail', function (req, res) {
         //smtpTransport.close(); // shut down the connection pool, no more messages
     });
 
-    res.render('pages/login');
+    res.render('pages/login', {
+        info: ""
+
+    });
 
 });
 
@@ -810,12 +880,13 @@ app.post('/new_user', urlencodedParser, function (req, res) {
                 });
 
 
-                //res.redirect('/login');
+                res.redirect('/login?info=newReg');
+                /*
                 res.render('pages/upload_profile_pic', {
                     picId: user.picId
 
                 });
-
+                */
 
 
             }
@@ -885,7 +956,10 @@ app.post('/new_user2', urlencodedParser, function (req, res) {
         }
     });
 
-    res.render('pages/login');
+    res.render('pages/login', {
+        info: ""
+
+    });
 
 });
 
@@ -1573,13 +1647,13 @@ app.get('/chatroom', function (req, res) {
                 }
 
             });
-              
-            
-           
-       
+
+
+
+
             //loop through to find profile from friendlist
-            var emailToProfileList=new Object();
-         //   console.log("_friend_list="+_friend_list);
+            var emailToProfileList = new Object();
+            //   console.log("_friend_list="+_friend_list);
             body.rows.forEach(function (row) {
 
                 if (row.doc.type === "user") {
@@ -1593,8 +1667,8 @@ app.get('/chatroom', function (req, res) {
 
                             var entry = new Object();
                             entry.nickname = row.doc.name;
-                            entry.picId = "/preview?picId=" +row.doc.picId;
-                            emailToProfileList[friendEmail]=entry;
+                            entry.picId = "/preview?picId=" + row.doc.picId;
+                            emailToProfileList[friendEmail] = entry;
 
 
                         }
@@ -1604,11 +1678,11 @@ app.get('/chatroom', function (req, res) {
                 }
 
             });
-            
-            
+
+
             //////////
 
-            console.log("\n\n\nemailToProfileList="+JSON.stringify(emailToProfileList));
+            console.log("\n\n\nemailToProfileList=" + JSON.stringify(emailToProfileList));
 
 
 
@@ -1625,9 +1699,9 @@ app.get('/chatroom', function (req, res) {
 
                     room_name_mapping: room_name_mapping,
                     //modfiy here
-                    emailToProfileList:JSON.stringify(emailToProfileList),
-                    
-                    
+                    emailToProfileList: JSON.stringify(emailToProfileList),
+
+
                     // messages:JSON.stringify(messages).replace('\\"',"'")
                     //    messages:JSON.stringify(messages).replace('\\"',"\\\"")
                     messages: JSON.stringify(messages),

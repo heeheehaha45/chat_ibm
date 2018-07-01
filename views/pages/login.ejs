@@ -53,6 +53,18 @@
 
         </div>
             <div id="error-container" class="alert alert-danger" role="alert" style="display:none"></div>
+            
+            <% var infoMsg = info;%>
+            <% if (info!= undefined && info.length > 0) {
+                if(infoMsg=="newReg")
+                    infoMsg="Please check your email for activating your account";
+            
+            %>
+                <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">
+                    <%-infoMsg%>
+                </div>
+                <%}%>
+            
     </div>
 </section>
     <script src="static/js/jquery-1.11.3.min.js"></script>

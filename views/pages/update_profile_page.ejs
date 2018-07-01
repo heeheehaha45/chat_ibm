@@ -52,6 +52,25 @@
     </div>
 	</section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
+    
+    <script>
+        
+        $(document).ready(function() {
+            
+            var err="<%=err%>";
+            if(err!==""){
+                if(err=="fileSize")
+                    alert("Picture exceeds 2MB!");
+                else if (err=="picType")
+                    alert("We accept jpg, png or gif only!");
+            }
+            
+            
+        });
+    
+    
+    </script>
+    
 </body>
 
 </html>

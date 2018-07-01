@@ -67,7 +67,7 @@
  
     var friend_list = [];
 	var emailToProfileList=<%- emailToProfileList %>;
-    alert (JSON.stringify(emailToProfileList));
+    //alert (JSON.stringify(emailToProfileList));
  
     <% for(var i=0; i<friend_list.length; i++) {%>
 		//friend_list.push("<%= friend_list[i] %>");
@@ -113,7 +113,7 @@
         if (msg) {
             socket.emit('send', {
                 room: room_id,
-                message: msg,
+                message: sanitize(msg),
                 userId: userId
             });
         }
@@ -211,6 +211,33 @@
         changeChatRoom();
     }
  
+    
+    function sanitize(_str){
+        
+        var entityMap = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        };
+        return String(_str).replace(/[&<>"'`=\/]/g, function (s) {
+            return entityMap[s];
+        });
+        
+        //return _str;
+         $("#tmp").text(_str);
+         var escaped=$("#tmp").html();
+         
+         $("#tmp").text("");
+         return "->"+escaped;
+        
+    }
+    
+    
     function changeChatRoom() {
         var curRoom = $("#room_id").val();
         console.log(curRoom);
