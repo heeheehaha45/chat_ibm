@@ -824,7 +824,7 @@ app.post('/new_user', urlencodedParser, function (req, res) {
             } else {
                 var user = new Object();
                 user.type = "user";
-                user.email = email;
+                user.email = sanitize(email);
                 user.pw = pw;
                 user.token = randomString();
                 user.identity = randomString();
@@ -832,10 +832,10 @@ app.post('/new_user', urlencodedParser, function (req, res) {
                 user.friend_list = [];
                 user.activate_code = randomString();
                 user.activated = false;
-                user.interest = interest;
-                user.faculty = faculty;
-                user.name = name;
-                user.description = description;
+                user.interest = sanitize(interest);
+                user.faculty = sanitize(faculty);
+                user.name = sanitize(name);
+                user.description = sanitize(description);
                 //add to db
                 mydb.insert(user, function (err, body, header) {
                     if (err) {
@@ -1960,6 +1960,24 @@ io.on('connection', function (socket) {
 
 */
 
+ function sanitize(_str){
+        
+        var entityMap = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        };
+        return String(_str).replace(/[&<>"'`=\/]/g, function (s) {
+            return entityMap[s];
+        });
+            
+}
+
 io.sockets.on('connection', function (socket) {
     socket.on('subscribe', function (room) {
         console.log('joining room', room);
@@ -1990,7 +2008,7 @@ io.sockets.on('connection', function (socket) {
         var newMsg = new Object();
         newMsg.from = data.userId;
         newMsg.to = "";
-        newMsg.msg = data.message;
+        newMsg.msg =sanitize( data.message );
         newMsg.time = data.time;
         newMsg.hasRead = data.hasRead;
         newMsg.id = randomString();
