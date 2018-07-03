@@ -32,7 +32,11 @@
     "ibm-cos-sdk":"*",
     "formidable":"*",
    
-    "path":"*"
+    "path":"*",
+      
+    "express-session":"*",
+    "cookie-parser":"*"
+      
       
   },
   "author": "IBM Corp",

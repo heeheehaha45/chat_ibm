@@ -7,7 +7,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
-
+  
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
     <link rel="stylesheet" href="/static/css/chat.css">
@@ -63,7 +63,18 @@
                 <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">
                     <%-infoMsg%>
                 </div>
-                <%}%>
+            <%}%>
+            
+             <% var errMsg = error;%>
+            <% if (error!= undefined && error.length > 0) {
+                if(errMsg=="invalid")
+                    infoMsg="password or username is not valid.";
+            
+            %>
+                <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">
+                    <%-infoMsg%>
+                </div>
+            <%}%>
             
     </div>
 </section>

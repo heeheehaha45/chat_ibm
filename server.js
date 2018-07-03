@@ -13,6 +13,10 @@ const nodemailer = require('nodemailer');
 var cfenv = require("cfenv");
 var mydb;
 
+var expressSession = require('express-session'),
+    cookieParser = require('cookie-parser');
+
+
 const crypto = require('crypto');
 
 formidable = require('formidable'),
@@ -32,6 +36,17 @@ console.log("domain="+os.hostname());
 app.set('view engine', 'ejs');
 
 app.use("/static", express.static(__dirname + '/static'));
+
+
+app.use(cookieParser());
+app.use(expressSession({
+    secret: 'mYsEcReTkTy',
+    resave: true,
+    saveUninitialized: true
+}));// I haven't used the session store
+
+
+
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -88,12 +103,30 @@ if (appEnv.services['cloudantNoSQLDB'] || appEnv.getService(/cloudant/)) {
 
 
 app.get('/', function (req, res) {
-    res.sendfile('index.html');
+    console.log("inside root:"+req.session.userId);
+    req.session.userId = "1234";
+    
+    
+    res.redirect('/login');
 });
+
+app.get('/logout', function (req, res) {
+    req.session.destroy();    
+    
+    res.redirect('/login');
+});
+
 
 
 app.get('/login', function (req, res) {
     var info = req.query.info;
+    var error=req.query.error;
+    
+    if(typeof error=="undefined")
+        error="";
+    //console.log("inside login:"+req.session.userId);
+
+    
     if (typeof info != 'undefined')
         info = info;
 
@@ -101,8 +134,8 @@ app.get('/login', function (req, res) {
         info = "";
 
     res.render('pages/login', {
-        info: info
-
+        info: info,
+        error:error
     });
 
 
@@ -1009,6 +1042,9 @@ app.post('/auth/', urlencodedParser, function (req, res) {
             if (found) {
                 //successfully login
                 console.log("found");
+                req.session.token = token;
+                
+                //res.redirect('/chatroom?t=' + token);
                 res.redirect('/chatroom?t=' + token);
             } else {
                 //invalid username or pw
@@ -1124,7 +1160,7 @@ app.get('/new_friend_list', urlencodedParser, function (req, res) {
 
             body.rows.forEach(function (row) {
 
-                if (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain) {
+                if (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain && row.doc.activated==true) {
                     if (friendList.indexOf(row.doc.email) == -1) {
 
                         var frd = new Object;
@@ -1557,9 +1593,19 @@ app.get('/testFriendListToProfile', function (req, res) {
 });
 
 app.get('/chatroom', function (req, res) {
+    if(typeof req.session.token =='undefined'){
+        res.redirect('/login');
+        return;
+    }
+    
+    
     console.log("chatroom");
     //get token
     var token = req.query.t;
+    if (typeof token=='undefined')
+        token=req.session.token;
+    
+    
     console.log("token=" + token);
     //get email from token
     // var userId = "heeheehaha45@abc.com";
