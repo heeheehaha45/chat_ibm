@@ -133,7 +133,7 @@
     }
     
 	function compare(a,b) {
-		/*
+		
 		var t1 = new Date(a.lastMsgTime);
 		var t2 = new Date(b.lastMsgTime);
 		
@@ -141,14 +141,21 @@
 			return -1;
 		if (t1 < t2)
 			return 1;
-		*/	
 	
+	/*
 		if (a.lastMsgTime > b.lastMsgTime)
 			return -1;
 		if (a.lastMsgTime < b.lastMsgTime)
 			return 1;
+					*/
 			
 		return 0;
+	}
+	
+	function imgError(image) {
+		image.onerror = "";
+		image.src = "static/img/avatar-default.png";
+		return true;
 	}
 	
     function updateChatRoomList()
@@ -171,7 +178,7 @@
 			lastMsgTime = lastMsgTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
 			
 			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">'
-			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '"><div class="nav-friendlist-row">' + getProfileByUserId(friend_list[i].userId).nickname;
+			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '" onerror="imgError(this)"><div class="nav-friendlist-row">' + getProfileByUserId(friend_list[i].userId).nickname;
 			htmlString += '<div class="last-message">' + friend_list[i].lastMsg;
 			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></div></a></li>';
 		}
@@ -297,7 +304,7 @@
  
             <ul class="list-unstyled components">
                 <p>
-                   <img id="my-avatar" src="<%= picURL %>" class="img-thumbnail pointer">
+                   <img id="my-avatar" src="<%= picURL %>" onerror="imgError(this);" class="img-circle pointer">
 				   <label id="my-id" class="pointer"><%=userId%></label>
                 </p>
 				<div id="chatroom-list">
@@ -312,6 +319,12 @@
                 <script>
                 // Get the modal
                         function getNewFriends(){
+							if ($('#my-avatar').attr('src') === 'static/img/avatar-default.png')
+							{
+								$("#frmUpdateMyAvatar").submit();
+								return;
+							}
+							
                             var cards = [];
                             
                             $.get("/new_friend_list", {
