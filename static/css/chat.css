@@ -624,7 +624,7 @@ a.hover:hover {
 }
 
 #chat-input {
-  width: calc(100% - 300px);
+  width: calc(100% - 320px);
   padding: 5px 10px 5px 10px;
   background: #fff;
   position: fixed;
@@ -1481,8 +1481,8 @@ label.chat-input-file.file-upload {
     SIDEBAR STYLE
 ----------------------------------------------------- */
 #sidebar {
-    min-width: 300px;
-	max-width: 300px;
+    min-width: 320px;
+	max-width: 320px;
 	height: 100%;
     position: fixed;
     top: 0;
@@ -1496,7 +1496,7 @@ label.chat-input-file.file-upload {
 }
 
 #sidebar.active {
-    margin-left: -300px;
+    margin-left: -320px;
 }
 
 #sidebar .sidebar-header {
@@ -1511,7 +1511,7 @@ label.chat-input-file.file-upload {
 
 #sidebar ul p {
     color: #fff;
-    padding: 10px;
+    padding: 5px;
 	font-size: 1.3em;
 }
 
@@ -1581,7 +1581,7 @@ a.article, a.article:hover {
     CONTENT STYLE
 ----------------------------------------------------- */
 #content {
-    width: calc(100% - 300px);
+    width: calc(100% - 320px);
     min-height: 100vh;
     transition: all 0.3s;
     position: absolute;
@@ -1666,7 +1666,7 @@ a.article, a.article:hover {
   100% { transform: rotate(360deg); }
 }
 
-.modal-content {
+.modal-content-friend-card {
 	background-color: transparent;
 	background: url("../img/circle-card.png") no-repeat center center;
 	border: none;
@@ -1680,7 +1680,7 @@ a.article, a.article:hover {
 }
 
 /* The Close Button */
-.close {
+.close-friend-card {
     color: #fff;
     position: fixed;
     top:0;
@@ -1725,10 +1725,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #my-avatar {
-	height: 60px;
-	width: 60px;
+	height: 65px;
+	width: 65px;
 	margin-right: 10px;
 	margin-left: 10px;
+	object-fit: cover;
 }
 
 .pointer {
@@ -1745,8 +1746,31 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	margin-right: 10px;
 	height: 50px;
 	width: 50px;
+	object-fit: cover;
 }
 
 #matchNewFriends {
 	margin-left: 30px;
+}
+
+#btnLogout {
+	float: right;
+	margin: auto 0;
+}
+
+.show {
+	opacity:100;
+}
+
+.modal-backdrop {
+	z-index: 100;
+}
+
+#my-id, .nav-friendlist-name {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	max-width: 170px;
+	margin: auto 0;
+	vertical-align: middle;
 }

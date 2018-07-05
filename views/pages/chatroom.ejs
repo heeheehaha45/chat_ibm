@@ -3,7 +3,7 @@
  
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
  
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
@@ -106,17 +106,21 @@
  
     function sendMessage() {
         var msg = document.getElementById('message').value;
-        var room_id = document.getElementById('room_id').value;
-        //console.log("room_id="+room_id);
-        // console.log("msg="+msg);
- 
-        if (msg) {
-            socket.emit('send', {
-                room: room_id,
-                message: sanitize(msg),
-                userId: userId
-            });
-        }
+		
+		if (msg.trim().length > 0)
+		{
+			var room_id = document.getElementById('room_id').value;
+			//console.log("room_id="+room_id);
+			// console.log("msg="+msg);
+	 
+			if (msg) {
+				socket.emit('send', {
+					room: room_id,
+					message: sanitize(msg),
+					userId: userId
+				});
+			}
+		}
  
         $('#message').val('').focus(); // clear the message field and set focus
     }
@@ -158,6 +162,13 @@
 		return true;
 	}
 	
+	function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+	}
+	
     function updateChatRoomList()
     {	
 		// get last msg info
@@ -175,11 +186,11 @@
 		// update chatroom friend list order and last msg
 		for (var i = 0; i < friend_list.length; i++) {
 			var lastMsgTime = new Date(friend_list[i].lastMsgTime);
-			lastMsgTime = lastMsgTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
+			lastMsgTime = addZero(lastMsgTime.getHours()) + ':' + addZero(lastMsgTime.getMinutes()); //toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
 			
 			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">'
-			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '" onerror="imgError(this)"><div class="nav-friendlist-row">' + getProfileByUserId(friend_list[i].userId).nickname;
-			htmlString += '<div class="last-message">' + friend_list[i].lastMsg;
+			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '" onerror="imgError(this)"><div class="nav-friendlist-row"><label class="nav-friendlist-name">' + getProfileByUserId(friend_list[i].userId).nickname;
+			htmlString += '</label><div class="last-message">' + friend_list[i].lastMsg;
 			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></div></a></li>';
 		}
 		
@@ -261,7 +272,8 @@
                 msgFrom = messages[curRoom][i]["from"];
 				msgDateTime = new Date(messages[curRoom][i]["time"]);
                 msgDate = msgDateTime.getFullYear() + '/' + (msgDateTime.getMonth() + 1) + '/' + msgDateTime.getDate();
-                msgTime = msgDateTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
+                msgTime = addZero(msgDateTime.getHours()) + ':' + addZero(msgDateTime.getMinutes());
+				//msgDateTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
                 
                 if (!(curDate === msgDate))
                 {
@@ -295,6 +307,36 @@
 </script>
  
 <body>
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4><center>Confirm to Logout?</center></h4>
+      </div>
+      <div class="modal-footer">
+        <center><button type="button" onclick="location.href='logout'" class="btn btn-primary btn-lg">Yes</button>
+		<button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">No</button></center>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UploadAvatar Modal -->
+<div class="modal fade" id="uploadAvatarModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4><center>Upload you profile picture to let others know you!</center></h4>
+      </div>
+      <div class="modal-footer">
+        <center><button id="btnUpdateAvatar" type="button" class="btn btn-primary btn-lg">Yes</button>
+		<button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">No</button></center>
+      </div>
+    </div>
+  </div>
+</div>
+
     <!-- user info -->
     <div class="wrapper">
         <nav id="sidebar">
@@ -303,10 +345,16 @@
             </div>
  
             <ul class="list-unstyled components">
-                <p>
+				<p>
                    <img id="my-avatar" src="<%= picURL %>" onerror="imgError(this);" class="img-circle pointer">
+
+				   <span>
 				   <label id="my-id" class="pointer"><%=userId%></label>
-                </p>
+				   <button type="button" id="btnLogout" class="btn btn-primary" data-toggle="modal" data-target="#logoutModal">
+						<i class="glyphicon glyphicon glyphicon-log-out"></i>
+					</button>
+					</span>
+				</p>
 				<div id="chatroom-list">
 
 				</div>
@@ -321,7 +369,8 @@
                         function getNewFriends(){
 							if ($('#my-avatar').attr('src') === 'static/img/avatar-default.png')
 							{
-								$("#frmUpdateMyAvatar").submit();
+								$('#uploadAvatarModal').modal('show');
+								//$("#frmUpdateMyAvatar").submit();
 								return;
 							}
 							
@@ -337,7 +386,20 @@
                                     //str = str+"Potential friend "+ i +" 's data:\n" 
                                     //str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
                                     //str=str+"\n\n";
-                                    cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, data[i].faculty, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
+									var faculty = "";
+									var desc = "";
+									
+									if (typeof data[i].faculty != 'undefined' && data[i].faculty.trim().length > 0)
+									{
+										faculty = "(" + data[i].faculty + ")";
+									}
+									
+									if (typeof data[i].description != 'undefined' && data[i].description.trim().length > 0)
+									{
+										desc = data[i].description;
+									}
+									
+                                    cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
                                 }
                                 
                                 //alert(str) ;
@@ -396,8 +458,8 @@
             <!-- The Modal -->
             <div id="myModal" class="modal">
               <!-- Modal content -->
-              <span class="close" id="closeModal">&times;</span>
-              <div class="modal-content">
+              <span class="close-friend-card" id="closeModal">&times;</span>
+              <div class="modal-content-friend-card">
                 <div id="friend-card"></div>
               </div>
  
@@ -444,6 +506,10 @@
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
 			
+			$('.chat-canvas').on('click', function() {
+				$('#sidebar, #content, #chat-input').addClass('active');
+			});
+			
 			$("#my-avatar").click(function() {
 				$("#frmUpdateMyAvatar").submit();
 			});
@@ -469,6 +535,10 @@
             $('#closeModal').on('click', function() {
                 $('#friend-card').empty(); 
                 $('#myModal').hide();
+            });
+			
+			$('#btnUpdateAvatar').on('click', function() {
+				$("#frmUpdateMyAvatar").submit();
             });
         });
 

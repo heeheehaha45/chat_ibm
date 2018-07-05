@@ -21,7 +21,7 @@ Tindercardsjs = (function () {
    * @memberof module:Tindercardsjs
    * @class
    */
-  exports.card = function (cardid, name, desc, imgpath, addUrl) {
+  exports.card = function (cardid, name, faculty, desc, imgpath, addUrl) {
     
     var jqo;
     
@@ -34,7 +34,7 @@ Tindercardsjs = (function () {
      */
     this.tojQuery = function () {
       if (!jqo) {
-        jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '</h2><span class="tc-card-desc">' + desc + '</span></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info btn" role="button" aria-pressed="true">Add Friend</a></div></div>');
+        jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info btn" role="button" aria-pressed="true">Add Friend</a></div></div>');
       }
       return jqo;
     };
@@ -155,7 +155,14 @@ Tindercardsjs = (function () {
         
         $card.find('.tc-card-name').css({
           'margin-top': '0',
-          'margin-bottom': '5px'
+          'margin-bottom': '5px',
+		  'display' : 'inline-block'
+        });
+		
+		$card.find('.tc-card-faculty').css({
+          'margin-top': '0',
+          'margin-bottom': '5px',
+		  'display' : 'inline-block'
         });
         
         $card.find('.tc-card-body').css({
