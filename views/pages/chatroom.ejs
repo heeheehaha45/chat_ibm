@@ -181,7 +181,7 @@
 		// sort array by last msg time
 		friend_list.sort(compare);
 	
-		var htmlString = '<li class="active"><a href="#homeSubmenu" data-toggle="collapse" aria-expanded="true">My Friends</a><ul class="list-unstyled collapse show" id="homeSubmenu">';
+		var htmlString = '<li class="active"><a class="list-section" href="#homeSubmenu" data-toggle="collapse" aria-expanded="true">My Friends</a><ul class="list-unstyled collapse show" id="homeSubmenu">';
 						
 		// update chatroom friend list order and last msg
 		for (var i = 0; i < friend_list.length; i++) {
@@ -359,7 +359,7 @@
 
 				</div>
                 <li>
-                    <a href="#">About Circle</a>
+                    <a href="#" class="list-section">About Circle</a>
                 </li>
             </ul>
  
@@ -581,6 +581,13 @@
 			//$("#my-avatar").click(function() {
 				//$("#frmUpdateMyAvatar").submit();
 			//});
+			
+			$(".nav-friendlist-row").click(function() {
+			
+				$('#sidebar, #content, #chat-input').toggleClass('active');
+				$('.collapse.in').toggleClass('in');
+				$('a[aria-expanded=true]').attr('aria-expanded', 'false');
+			});
 			
 			$("#my-id").click(function() {
 				$("#frmUpdateMyInfo").submit();

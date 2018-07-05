@@ -1516,7 +1516,6 @@ label.chat-input-file.file-upload {
 }
 
 #sidebar ul li a {
-    padding: 10px;
     font-size: 1.1em;
     display: block;
 }
@@ -1535,6 +1534,9 @@ label.chat-input-file.file-upload {
 	overflow: hidden;
 }
 
+.list-section {
+	padding: 10px;
+}
 
 a[data-toggle="collapse"] {
     position: relative;
@@ -1739,11 +1741,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .nav-friendlist-row {
 	display: inline-block;
 	width: 210px;
+	padding: 10px;
 }
 
 .nav-friend-avatar {
 	float: left;
-	margin-right: 10px;
+	margin: 10px 10px 10px 0px;
 	height: 50px;
 	width: 50px;
 	object-fit: cover;
