@@ -1714,6 +1714,8 @@ app.get('/chatroom', function (req, res) {
                             var entry = new Object();
                             entry.nickname = row.doc.name;
                             entry.picId = "/preview?picId=" + row.doc.picId;
+							entry.faculty = row.doc.faculty;
+							entry.description = row.doc.description;
                             emailToProfileList[friendEmail] = entry;
 
 

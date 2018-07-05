@@ -189,7 +189,7 @@
 			lastMsgTime = addZero(lastMsgTime.getHours()) + ':' + addZero(lastMsgTime.getMinutes()); //toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false });
 			
 			htmlString += '<li><a class="link-btn" href="javascript:selectFriend(\'' + friend_list[i].roomId + '\')">'
-			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '" onerror="imgError(this)"><div class="nav-friendlist-row"><label class="nav-friendlist-name">' + getProfileByUserId(friend_list[i].userId).nickname;
+			htmlString += '<img class="nav-friend-avatar img-circle" src="' + getProfileByUserId(friend_list[i].userId).picId + '" onerror="imgError(this)" onclick="getFriendProfile(\''+ friend_list[i].userId + '\')"><div class="nav-friendlist-row"><label class="nav-friendlist-name">' + getProfileByUserId(friend_list[i].userId).nickname;
 			htmlString += '</label><div class="last-message">' + friend_list[i].lastMsg;
 			htmlString += '<span class="last-message-time">' + lastMsgTime + '</span></div></div></a></li>';
 		}
@@ -366,6 +366,40 @@
             <ul class="list-unstyled CTAs">
                 <script>
                 // Get the modal
+							function getFriendProfile(friend){							
+								var cards = [];
+									var faculty="";
+									var description="";
+									
+									var friendName=getProfileByUserId(friend).nickname;
+									var friendFaculty=getProfileByUserId(friend).faculty;
+									var friendDesc=getProfileByUserId(friend).description;
+									
+									if (typeof friendFaculty != 'undefined' && friendFaculty.trim().length > 0)
+									{
+										faculty = "(" + friendFaculty + ")";
+									}
+									
+									if (typeof friendDesc != 'undefined' && friendDesc.trim().length > 0)
+									{
+										description = friendDesc;
+									}
+									
+                                    cards.push(new Tindercardsjs.card('false', 0, friendName, faculty, description, getProfileByUserId(friend).picId, ''));                       
+                                
+                                
+                                //alert(str) ;
+                                //console.log(str);
+                                
+                                $('#myModal').show();
+ 
+                                // Render cards
+                                Tindercardsjs.render(cards, $('#friend-card'), 'false', function (event) {
+                                  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
+                                  console.log(event.card);
+                                });
+                        }
+				
                         function getNewFriends(){
 							if ($('#my-avatar').attr('src') === 'static/img/avatar-default.png')
 							{
@@ -399,7 +433,7 @@
 										desc = data[i].description;
 									}
 									
-                                    cards.push(new Tindercardsjs.card(data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
+                                    cards.push(new Tindercardsjs.card('true', data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
                                 }
                                 
                                 //alert(str) ;
@@ -408,7 +442,7 @@
                                 $('#myModal').show();
  
                                 // Render cards
-                                Tindercardsjs.render(cards, $('#friend-card'), function (event) {
+                                Tindercardsjs.render(cards, $('#friend-card'), 'true', function (event) {
                                   console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
                                   console.log(event.card);
                                 });
@@ -458,7 +492,7 @@
             <!-- The Modal -->
             <div id="myModal" class="modal">
               <!-- Modal content -->
-              <span class="close-friend-card" id="closeModal">&times;</span>
+              <span class="close-friend-card pointer" id="closeModal">&times;</span>
               <div class="modal-content-friend-card">
                 <div id="friend-card"></div>
               </div>

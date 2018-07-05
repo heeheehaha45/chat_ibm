@@ -21,7 +21,7 @@ Tindercardsjs = (function () {
    * @memberof module:Tindercardsjs
    * @class
    */
-  exports.card = function (cardid, name, faculty, desc, imgpath, addUrl) {
+  exports.card = function (isSwipe, cardid, name, faculty, desc, imgpath, addUrl) {
     
     var jqo;
     
@@ -34,7 +34,9 @@ Tindercardsjs = (function () {
      */
     this.tojQuery = function () {
       if (!jqo) {
-        jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info btn" role="button" aria-pressed="true">Add Friend</a></div></div>');
+		if (isSwipe=='true')
+			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info btn" role="button" aria-pressed="true">Add Friend</a></div></div>');
+		else 			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div></div>');
       }
       return jqo;
     };
@@ -125,7 +127,7 @@ Tindercardsjs = (function () {
    * @public
    * @memberof module:Tindercardsjs
    */
-  exports.render = function (cards, $target, onSwiped) {
+  exports.render = function (cards, $target, isSwipe, onSwiped) {
     var i,
       $card;
     
@@ -178,7 +180,8 @@ Tindercardsjs = (function () {
         });
       }
       
-      initSwipe(onSwiped);
+	  if (isSwipe=='true')
+		initSwipe(onSwiped);
       
     } else {
       console.warn('card array empty, no cards will be displayed');
