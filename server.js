@@ -313,7 +313,7 @@ app.get("/update_profile_data_page", function (req, res) {
 
                 res.render('pages/update_profile_data_page', {
                     token: req.query.token,
-                    nickname_old: user.nickname,
+                    nickname_old: user.name,
                     interest_old: user.interest,
                     description_old: user.description
                 });
@@ -352,7 +352,7 @@ app.get("/update_profile_page", function (req, res) {
 app.post("/update_profile_data", urlencodedParser, function (req, res) {
 
     var token = req.body.token;
-    var nickname = req.body.nickname;
+    var name = req.body.name;
     var interest = req.body.interest;
     var description = req.body.description;
 
@@ -378,7 +378,7 @@ app.post("/update_profile_data", urlencodedParser, function (req, res) {
             console.log("found=" + found);
 
             if (found) {
-                user.nickname = nickname;
+                user.name = name;
                 user.interest = interest;
                 user.description = description;
                 //user.pw="123";
@@ -1155,12 +1155,22 @@ app.get('/new_friend_list', urlencodedParser, function (req, res) {
             });
             //start to search for new friendList
 
-
-
+          
+            hkuDomainArr=["hku.hk","connect.hku.hk"];
+            var check;
 
             body.rows.forEach(function (row) {
-
-                if (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain && row.doc.activated==true) {
+                
+                if(userDomain==hkuDomainArr[0] || userDomain==hkuDomainArr[1]){
+                    //hku
+                    check = (row.doc.type === "user" && row.doc.token != token && (getDomain(row.doc.email) == hkuDomainArr[0] || getDomain(row.doc.email) == hkuDomainArr[1]) && row.doc.activated==true);
+                }else{
+                    //non-hku
+                    check = (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain && row.doc.activated==true);
+                    
+                }
+                
+                if (check===true) {
                     if (friendList.indexOf(row.doc.email) == -1) {
 
                         var frd = new Object;
