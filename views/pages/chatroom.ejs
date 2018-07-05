@@ -346,7 +346,7 @@
  
             <ul class="list-unstyled components">
 				<p>
-                   <img id="my-avatar" src="<%= picURL %>" onerror="imgError(this);" class="img-circle pointer">
+                   <img id="my-avatar" src="<%= picURL %>" onerror="imgError(this);" onclick='getMyProfile("<%= picURL %>")' class="img-circle pointer">
 
 				   <span>
 				   <label id="my-id" class="pointer"><%=userId%></label>
@@ -366,6 +366,40 @@
             <ul class="list-unstyled CTAs">
                 <script>
                 // Get the modal
+						function getMyProfile(picURL){							
+								var cards = [];
+									var faculty="";
+									var description="";
+									
+									//var friendName=getProfileByUserId(friend).nickname;
+									//var friendFaculty=getProfileByUserId(friend).faculty;
+									//var friendDesc=getProfileByUserId(friend).description;
+									
+									//if (typeof friendFaculty != 'undefined' && friendFaculty.trim().length > 0)
+									//{
+									//	faculty = "(" + friendFaculty + ")";
+									//}
+									
+									//if (typeof friendDesc != 'undefined' && friendDesc.trim().length > 0)
+									//{
+									//	description = friendDesc;
+									//}
+									
+                                    cards.push(new Tindercardsjs.card(3, 0, '', '', '', picURL, ''));                       
+                                
+                                
+                                //alert(str) ;
+                                //console.log(str);
+                                
+                                $('#myModal').show();
+ 
+                                // Render cards
+                                Tindercardsjs.render(cards, $('#friend-card'), 'false', function (event) {
+                                  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
+                                  console.log(event.card);
+                                });
+                        }
+						
 							function getFriendProfile(friend){							
 								var cards = [];
 									var faculty="";
@@ -385,7 +419,7 @@
 										description = friendDesc;
 									}
 									
-                                    cards.push(new Tindercardsjs.card('false', 0, friendName, faculty, description, getProfileByUserId(friend).picId, ''));                       
+                                    cards.push(new Tindercardsjs.card(2, 0, friendName, faculty, description, getProfileByUserId(friend).picId, ''));                       
                                 
                                 
                                 //alert(str) ;
@@ -433,7 +467,7 @@
 										desc = data[i].description;
 									}
 									
-                                    cards.push(new Tindercardsjs.card('true', data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
+                                    cards.push(new Tindercardsjs.card(1, data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
                                 }
                                 
                                 //alert(str) ;
@@ -544,9 +578,9 @@
 				$('#sidebar, #content, #chat-input').addClass('active');
 			});
 			
-			$("#my-avatar").click(function() {
-				$("#frmUpdateMyAvatar").submit();
-			});
+			//$("#my-avatar").click(function() {
+				//$("#frmUpdateMyAvatar").submit();
+			//});
 			
 			$("#my-id").click(function() {
 				$("#frmUpdateMyInfo").submit();
