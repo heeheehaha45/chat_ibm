@@ -27,7 +27,7 @@ formidable = require('formidable'),
 //var domain = "http://localhost:3000";
 var domain = "https://getstartednode-smart-grysbok.mybluemix.net";
 
-console.log("domain="+os.hostname());
+console.log("domain=" + os.hostname());
 
 
 
@@ -43,7 +43,7 @@ app.use(expressSession({
     secret: 'mYsEcReTkTy',
     resave: true,
     saveUninitialized: true
-}));// I haven't used the session store
+})); // I haven't used the session store
 
 
 
@@ -103,16 +103,16 @@ if (appEnv.services['cloudantNoSQLDB'] || appEnv.getService(/cloudant/)) {
 
 
 app.get('/', function (req, res) {
-    console.log("inside root:"+req.session.userId);
+    console.log("inside root:" + req.session.userId);
     req.session.userId = "1234";
-    
-    
+
+
     res.redirect('/login');
 });
 
 app.get('/logout', function (req, res) {
-    req.session.destroy();    
-    
+    req.session.destroy();
+
     res.redirect('/login');
 });
 
@@ -120,13 +120,13 @@ app.get('/logout', function (req, res) {
 
 app.get('/login', function (req, res) {
     var info = req.query.info;
-    var error=req.query.error;
-    
-    if(typeof error=="undefined")
-        error="";
+    var error = req.query.error;
+
+    if (typeof error == "undefined")
+        error = "";
     //console.log("inside login:"+req.session.userId);
 
-    
+
     if (typeof info != 'undefined')
         info = info;
 
@@ -135,7 +135,7 @@ app.get('/login', function (req, res) {
 
     res.render('pages/login', {
         info: info,
-        error:error
+        error: error
     });
 
 
@@ -274,6 +274,157 @@ function blah() {
 
     return receiver__;
 }
+
+
+app.get("/reset_pw_process", function (req, res) {
+
+    var code = req.query.code;
+    var pw = req.query.pw;
+
+    mydb.list({
+        include_docs: true
+    }, function (err, body) {
+        if (!err) {
+            var found = false;
+
+            body.rows.forEach(function (row) {
+                if (row.doc.type === "user" && row.doc.activate_code === code) {
+                    user = row.doc;
+                    found = true;
+
+                }
+            });
+            console.log("found=" + found);
+
+            if (found) {
+                user.pw = pw;
+
+                mydb.insert(user, function (err, body, header) {
+                    if (err) {
+                        console.log('[mydb.insert] ', err.message);
+                        res.send("Error");
+                    }
+                    res.redirect('/login?infoMsg=Your password has been reset.');       
+                });
+
+            } else {
+                res.render('pages/error');
+
+            }
+        } //endif
+        else {
+            console.log(err);
+        }
+    });
+
+
+
+
+   
+
+});
+
+
+app.get("/reset_pw", function (req, res) {
+
+    var code = req.query.code;
+
+    res.render('pages/reset_pw', {
+        code: code
+    });
+
+});
+
+app.get("/forget_pw", function (req, res) {
+
+
+    res.render('pages/forget_pw');
+
+
+});
+
+app.get("/send_pw_email", function (req, res) {
+    //a picId is required to /update_profile_page?picId=xxxx
+
+    var email = req.query.email;
+
+    //find the user
+    if (!mydb) {
+        //response.json(names);
+        return;
+    }
+
+    mydb.list({
+        include_docs: true
+    }, function (err, body) {
+        if (!err) {
+            var found = false;
+
+            body.rows.forEach(function (row) {
+                if (row.doc.type === "user" && row.doc.email === email) {
+                    user = row.doc;
+                    found = true;
+
+                }
+            });
+            console.log("found=" + found);
+
+            if (found) {
+                //send email
+                var smtpTransport = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true, // use SSL
+                    auth: {
+                        user: 'thesocialcircleappnoreply@gmail.com',
+                        pass: '8yq38cbf'
+                    }
+                });
+
+
+                var link = domain + "/reset_pw?code=" + user.activate_code;
+                // setup e-mail data with unicode symbols
+                var mailOptions = {
+                    from: "thesocialcircleappnoreply@gmail.com", // sender address
+                    to: email, // list of receivers
+                    subject: "Reset of password of your account", // Subject line
+                    text: "Dear user, Please click the following link to reset your password: " + link, // plaintext body
+                    html: "Dear user, Please click the following link to reset your password: <a href='" + link + "'>" + link + "</a>" // html body
+                }
+
+                // send mail with defined transport object
+                smtpTransport.sendMail(mailOptions, function (error, response) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log("Message sent: " + response.message);
+                    }
+
+                    // if you don't want to use this transport object anymore, uncomment following line
+                    //smtpTransport.close(); // shut down the connection pool, no more messages
+                });
+
+
+
+                res.redirect('/chatroom');
+
+
+
+            } else {
+                res.redirect('/chatroom');
+
+            }
+        } //endif
+        else {
+            console.log(err);
+        }
+    });
+
+
+
+});
+
+
 
 
 app.get("/update_profile_data_page", function (req, res) {
@@ -1043,7 +1194,7 @@ app.post('/auth/', urlencodedParser, function (req, res) {
                 //successfully login
                 console.log("found");
                 req.session.token = token;
-                
+
                 //res.redirect('/chatroom?t=' + token);
                 res.redirect('/chatroom?t=' + token);
             } else {
@@ -1155,22 +1306,22 @@ app.get('/new_friend_list', urlencodedParser, function (req, res) {
             });
             //start to search for new friendList
 
-          
-            hkuDomainArr=["hku.hk","connect.hku.hk"];
+
+            hkuDomainArr = ["hku.hk", "connect.hku.hk"];
             var check;
 
             body.rows.forEach(function (row) {
-                
-                if(userDomain==hkuDomainArr[0] || userDomain==hkuDomainArr[1]){
+
+                if (userDomain == hkuDomainArr[0] || userDomain == hkuDomainArr[1]) {
                     //hku
-                    check = (row.doc.type === "user" && row.doc.token != token && (getDomain(row.doc.email) == hkuDomainArr[0] || getDomain(row.doc.email) == hkuDomainArr[1]) && row.doc.activated==true);
-                }else{
+                    check = (row.doc.type === "user" && row.doc.token != token && (getDomain(row.doc.email) == hkuDomainArr[0] || getDomain(row.doc.email) == hkuDomainArr[1]) && row.doc.activated == true);
+                } else {
                     //non-hku
-                    check = (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain && row.doc.activated==true);
-                    
+                    check = (row.doc.type === "user" && row.doc.token != token && getDomain(row.doc.email) == userDomain && row.doc.activated == true);
+
                 }
-                
-                if (check===true) {
+
+                if (check === true) {
                     if (friendList.indexOf(row.doc.email) == -1) {
 
                         var frd = new Object;
@@ -1603,19 +1754,19 @@ app.get('/testFriendListToProfile', function (req, res) {
 });
 
 app.get('/chatroom', function (req, res) {
-    if(typeof req.session.token =='undefined'){
+    if (typeof req.session.token == 'undefined') {
         res.redirect('/login');
         return;
     }
-    
-    
+
+
     console.log("chatroom");
     //get token
     var token = req.query.t;
-    if (typeof token=='undefined')
-        token=req.session.token;
-    
-    
+    if (typeof token == 'undefined')
+        token = req.session.token;
+
+
     console.log("token=" + token);
     //get email from token
     // var userId = "heeheehaha45@abc.com";
@@ -1724,8 +1875,8 @@ app.get('/chatroom', function (req, res) {
                             var entry = new Object();
                             entry.nickname = row.doc.name;
                             entry.picId = "/preview?picId=" + row.doc.picId;
-							entry.faculty = row.doc.faculty;
-							entry.description = row.doc.description;
+                            entry.faculty = row.doc.faculty;
+                            entry.description = row.doc.description;
                             emailToProfileList[friendEmail] = entry;
 
 
@@ -2018,22 +2169,22 @@ io.on('connection', function (socket) {
 
 */
 
- function sanitize(_str){
-        
-        var entityMap = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-          '/': '&#x2F;',
-          '`': '&#x60;',
-          '=': '&#x3D;'
-        };
-        return String(_str).replace(/[&<>"'`=\/]/g, function (s) {
-            return entityMap[s];
-        });
-            
+function sanitize(_str) {
+
+    var entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+    };
+    return String(_str).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
+
 }
 
 io.sockets.on('connection', function (socket) {
@@ -2066,7 +2217,7 @@ io.sockets.on('connection', function (socket) {
         var newMsg = new Object();
         newMsg.from = data.userId;
         newMsg.to = "";
-        newMsg.msg =sanitize( data.message );
+        newMsg.msg = sanitize(data.message);
         newMsg.time = data.time;
         newMsg.hasRead = data.hasRead;
         newMsg.id = randomString();
