@@ -25,7 +25,8 @@ formidable = require('formidable'),
 
 
 //var domain = "http://localhost:3000";
-var domain = "https://getstartednode-smart-grysbok.mybluemix.net";
+//var domain = "https://getstartednode-smart-grysbok.mybluemix.net";
+var domain = "https://circleio.mybluemix.net/";
 
 console.log("domain=" + os.hostname());
 
