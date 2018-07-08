@@ -10,13 +10,21 @@
   
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/chat.css">
-    <title>Welcome</title>
+    <title>Circle - Welcome</title>
 </head>
 
 
 
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v3.0';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 	<section class="color-banner">
 
     <!-- user info -->
@@ -40,13 +48,25 @@
                 <form action="/auth" method="post">
                     <div>
                         <input type="text" class="index-textbox index-email" placeholder="Enter Your Email" id="email" name="email" value="">
-                    </div>    
+                    </div>   
+                    <div>					
                         <input type="password" class="index-textbox index-password" placeholder="Enter Your Password" id="password" name="password" value="">
-                    <div>
                     </div>
-                    <div>
+					<div>					
+					<a href="forget_pw">Forget Password?</a>
+                    </div>
+					<div class="fb-share-button" data-href="https://circleio.mybluemix.net/login/" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcircleio.mybluemix.net%2Flogin%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+					<div>
                         <button type="submit" class="index-button" id="btn_start" onclick="">Login</button>
-						<button type="button" class="index-button" id="" onclick="location.href='/signup'">Sign up</button>
+						<button type="button" class="index-button" id="" onclick="location.href='/signup'">Sign up</button>						
+					<div class="popover-signup"> <!-- NEW -->
+					  <div class="popover bottom">
+						<div class="arrow"></div>
+						<div class="popover-content">
+						  <p>Sign up with your university email (e.g. @hku.hk, @cuhk.edu.hk, @ust.hk) to meet new friends in the same university!</p>
+						</div>
+					  </div>
+					</div>
                     </div>
                 </form>
             </div>
@@ -68,7 +88,7 @@
              <% var errMsg = error;%>
             <% if (error!= undefined && error.length > 0) {
                 if(errMsg=="invalid")
-                    infoMsg="password or username is not valid.";
+                    infoMsg="Username or Password is not valid.";
             
             %>
                 <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">

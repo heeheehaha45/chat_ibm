@@ -1800,6 +1800,9 @@ app.get('/chatroom', function (req, res) {
                     //token matched      
                     userId = row.doc.email;
                     picId = row.doc.picId;
+					nickname = row.doc.name;
+					faculty = row.doc.faculty;
+					description = row.doc.description;
                     _friend_list = row.doc.friend_list;
                     console.log("row.doc.friend_list=" + row.doc.friend_list);
                     found = true;

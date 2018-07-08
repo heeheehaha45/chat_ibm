@@ -35,11 +35,11 @@ Tindercardsjs = (function () {
     this.tojQuery = function () {
       if (!jqo) {
 		if (format===1)
-			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info btn" role="button" aria-pressed="true">Add Friend</a></div></div>');
+			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="' + addUrl + '" class="btn btn-info" role="button" aria-pressed="true">Add Friend</a></div></div>');
 		else if (format===2)
 			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div></div>');
 		else if (format===3)
-			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="#" class="btn btn-info btn" role="button" aria-pressed="true" onclick=\'$("#frmUpdateMyAvatar").submit()\'>Change Pic</a></div></div>');
+			jqo = $('<div class="tc-card">').attr('data-cardid', cardid).html('<div class="tc-card-img-cont"><img src="' + imgpath + '" class="tc-card-img" onerror="imgError(this)"><div class="tc-card-body"><h2 class="tc-card-name">' + name + '&ensp;</h2><h4 class="tc-card-faculty">' + faculty + '</h4><div class="tc-card-desc">' + desc + '</div></div><div class="tc-card-add"><a href="#" class="btn btn-info btn" role="button" aria-pressed="true" onclick=\'$("#frmUpdateMyInfo").submit()\'>Edit Profile</a><a href="#" class="btn btn-info btn" role="button" aria-pressed="true" onclick=\'$("#frmUpdateMyAvatar").submit()\'>Change Pic</a><a href="#" class="btn btn-info btn" role="button" aria-pressed="true" onclick=\'$("#frmChangePwd").submit()\'>Change Pwd</a></div></div>');
 
       }
       return jqo;
@@ -178,10 +178,13 @@ Tindercardsjs = (function () {
         });
 		
 		$card.find('.tc-card-add').css({
-          'position': 'absolute',
-          'bottom': '5px',
-		  'left' : '105px'
+		  'position': 'absolute',
+		  'width': '300px',
+		  'margin': '0px auto',
+		  'text-align': 'center',
+		  'bottom': '5px'
         });
+		
       }
       
 	  if (isSwipe=='true')

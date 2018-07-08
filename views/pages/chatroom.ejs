@@ -307,6 +307,15 @@
 </script>
  
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v3.0';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 <!-- Logout Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -349,7 +358,7 @@
                    <img id="my-avatar" src="<%= picURL %>" onerror="imgError(this);" onclick='getMyProfile("<%= picURL %>")' class="img-circle pointer">
 
 				   <span>
-				   <label id="my-id" class="pointer"><%=userId%></label>
+				   <label id="my-id" class="pointer"><%=nickname%></label>
 				   <button type="button" id="btnLogout" class="btn btn-primary" data-toggle="modal" data-target="#logoutModal">
 						<i class="glyphicon glyphicon glyphicon-log-out"></i>
 					</button>
@@ -371,21 +380,21 @@
 									var faculty="";
 									var description="";
 									
-									//var friendName=getProfileByUserId(friend).nickname;
-									//var friendFaculty=getProfileByUserId(friend).faculty;
-									//var friendDesc=getProfileByUserId(friend).description;
+									var myName="<%- nickname%>";
+									var myFaculty="<%- faculty%>";
+									var myDesc="<%- description%>";
 									
-									//if (typeof friendFaculty != 'undefined' && friendFaculty.trim().length > 0)
-									//{
-									//	faculty = "(" + friendFaculty + ")";
-									//}
+									if (typeof myFaculty != 'undefined' && myFaculty.trim().length > 0)
+									{
+										faculty = "(" + myFaculty + ")";
+									}
 									
-									//if (typeof friendDesc != 'undefined' && friendDesc.trim().length > 0)
-									//{
-									//	description = friendDesc;
-									//}
+									if (typeof myDesc != 'undefined' && myDesc.trim().length > 0)
+									{
+										description = myDesc;
+									}
 									
-                                    cards.push(new Tindercardsjs.card(3, 0, '', '', '', picURL, ''));                       
+                                    cards.push(new Tindercardsjs.card(3, 0, myName, faculty, description, picURL, ''));                       
                                 
                                 
                                 //alert(str) ;
@@ -495,14 +504,20 @@
                     <input type="hidden"  name="token" value="<%= token%>">
                     <!--<li><input type="submit" class="btn btn-info btn-lg" value="Change profile data"></li>-->
                  </form>
+				 
+				 <form id="frmChangePwd" action="/reset_pw" method="GET">
+				    <input type="hidden"  name="token" value="<%= token%>">
+                 </form>
                 
                 
                 <form id="frmSearchNewFriend" action="/new_friend" method="post">
                     <input type="hidden" id="userT" name="token" value="<%=token %>">
                     <li><input id="matchNewFriends" type="button" onclick="getNewFriends()" class="btn btn-info btn-lg" value="Match New Friends!"></li>
                 </form>
-            </ul>
- 
+				
+   </ul> 
+				<div class="fb-share-button" data-href="https://circleio.mybluemix.net/login/" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcircleio.mybluemix.net%2Flogin%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+
             <select style="display: none;" id="room_id" onchange="changeChatRoom()">
                 <% for(var i=0; i<friend_list.length; i++) {%>
                      <option value="<%= friend_list[i] %>">
@@ -590,7 +605,7 @@
 			});
 			
 			$("#my-id").click(function() {
-				$("#frmUpdateMyInfo").submit();
+				getMyProfile("<%= picURL %>");
 			});
  
             $('#btnSendMsg').on('click', function() {

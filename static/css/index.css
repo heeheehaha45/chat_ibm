@@ -121,7 +121,7 @@ input, button {
 }
 
 .index-button {
-  margin: 10px 0 50px 6px;
+  margin: 10px 0 0px 6px;
   width: 114px;
   height: 48px;
   -webkit-border-radius: 2px;
@@ -174,4 +174,20 @@ input, button {
 
 .index-logo {
 	height: 150px;
+}
+
+.popover-signup .popover {
+  position: relative;
+  display: block;
+  margin: 20px auto;
+  max-width: 400px;
+  background-color: #fbeed5;
+}
+
+.popover-signup .popover.bottom .arrow {
+	margin-left: 50px;
+}
+
+.popover-signup .popover.bottom .arrow:after {
+  border-bottom-color: #fbeed5;
 }

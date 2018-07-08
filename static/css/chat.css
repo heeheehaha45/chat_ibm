@@ -351,6 +351,7 @@ body {
 .chat-top__title--messaging {
   background: url("../img/icon-1on1chat-title.svg") no-repeat left center;
   margin-left: 20px;
+  font-family: inherit;
 }
 .chat-top__title--group {
   background: url("../img/icon-groupchat-title.svg") no-repeat left center;
@@ -1753,7 +1754,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #matchNewFriends {
-	margin-left: 30px;
+	margin-left: 40px;
 }
 
 #btnLogout {
@@ -1776,4 +1777,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	max-width: 170px;
 	margin: auto 0;
 	vertical-align: middle;
+}
+
+.fb-share-button {
+	float: right;
+	margin-right: 130px;
 }

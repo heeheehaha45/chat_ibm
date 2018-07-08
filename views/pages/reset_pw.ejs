@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
-    <title>Circle - Edit Profile</title>
+    <title>Circle - Change Password</title>
 </head>
 
 
@@ -33,12 +33,12 @@
                 <form action='/reset_pw_process' method='get'>
                         <input type='hidden' name='code' class="form-control" value="<%=code%>" />
                     <div>
-                        <input type="text" class="index-textbox index-user" placeholder="Enter your new password" id="pw" name="pw" value="">
+                        <input type="password" class="index-textbox index-password" placeholder="Enter your new password" id="pw" name="pw" value="">
                     </div>
 					
 
 					<div>
-                        <button type="submit" class="index-button" id="btn_start" onclick="">send</button>
+                        <button type="submit" class="index-button" id="btn_start" onclick="">Update</button>
 						<button type="button" class="index-button" id="btn_back" onclick="location.href='chatroom'">Back</button>
                     </div>
                 </form>
