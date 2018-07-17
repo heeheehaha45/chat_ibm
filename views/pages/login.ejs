@@ -7,98 +7,138 @@
 
     <link href='https://fonts.googleapis.com/css?family=Exo+2:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,900italic,900,800italic,800,700italic,700,600italic,600,500italic,500,400italic,300italic,200italic,200,100italic,100,300' rel='stylesheet' type='text/css'>
-  
+
     <link rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
+
+
+    <meta property="og:url" content="https://www.your-domain.com/your-page.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Circle搵朋友" />
+    <meta property="og:description" content="大學難交到好朋友？教室不固定，坐位不固定，班上同學不固定？交友圈小，除了同班同學，也想認識其他學系、其他年級的同學？機會來了！" />
+    <meta property="og:image" content="http://localhost:3000/static/img/logo.svg" />
     <title>Circle - Welcome</title>
 </head>
 
+<style>
+    .arrow::after {
+        border-bottom-color: #ffe100 !important;
+    }
 
+</style>
 
 <body>
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v3.0';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+    <div id="fb-root"></div>
+    <script>
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v3.0';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
 
-	<section class="color-banner">
+    </script>
 
-    <!-- user info -->
-    <div class="container">
-        <div class="row">
-            <!-- top -->
-            <div class="index-section index-top">
-                <div class="text-sort--center">
-                    <img src="static/img/logo.svg" class="index-logo">
-					<div class="index-title">Meet friends with the same email domain!</div>
-					<div class="fb-share-button" data-href="https://circleio.mybluemix.net/login/" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcircleio.mybluemix.net%2Flogin%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-                </div>
-            </div>
-			
-        </div>
+    <section class="color-banner">
 
         <!-- user info -->
-        <div class="row">
-            <div class="index-section index-input">
-               
-           
-               
-                <form action="/auth" method="post">
-                    <div>
-                        <input type="text" class="index-textbox index-email" placeholder="Enter Your Email" id="email" name="email" value="">
-                    </div>   
-                    <div>					
-                        <input type="password" class="index-textbox index-password" placeholder="Enter Your Password" id="password" name="password" value="">
+        <div class="container">
+            <div class="row">
+                <!-- top -->
+                <div class="index-section index-top">
+                    <div class="text-sort--center">
+                        <img src="static/img/logo.svg" class="index-logo">
+                        <div class="index-title">Meet friends with the same email domain!</div>
+
+
+                        <div id="fb-root"></div>
+                        <script>
+                            (function(d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0];
+                                if (d.getElementById(id)) return;
+                                js = d.createElement(s);
+                                js.id = id;
+                                js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+                                fjs.parentNode.insertBefore(js, fjs);
+                            }(document, 'script', 'facebook-jssdk'));
+
+                        </script>
+
+                        <!-- Your share button code -->
+                        <!--  <div class="fb-share-button" data-href="https://circleio.mybluemix.net" data-layout="button_count">    -->
                     </div>
-					<div>					
-					<a href="forget_pw">Forget Password?</a>
-                    </div>
-					<div>
-                        <button type="submit" class="index-button" id="btn_start" onclick="">Login</button>
-						<button type="button" class="index-button" id="" onclick="location.href='/signup'">Sign up</button>						
-					<div class="popover-signup"> <!-- NEW -->
-					  <div class="popover bottom">
-						<div class="arrow"></div>
-						<div class="popover-content">
-						  <p>Sign up with your university email (e.g. @hku.hk, @cuhk.edu.hk, @ust.hk) to meet new friends in the same university!</p>
-						</div>
-					  </div>
-					</div>
-                    </div>
-                </form>
+                </div>
             </div>
 
         </div>
-            <div id="error-container" class="alert alert-danger" role="alert" style="display:none"></div>
-            
-            <% var infoMsg = info;%>
+
+        <% var infoMsg = info;%>
             <% if (info!= undefined && info.length > 0) {
                 if(infoMsg=="newReg")
                     infoMsg="Please check your email for activating your account";
             
             %>
-                <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">
+                <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block;max-width: 400px; margin: 0 auto;">
                     <%-infoMsg%>
                 </div>
-            <%}%>
-            
-             <% var errMsg = error;%>
-            <% if (error!= undefined && error.length > 0) {
+                <%}%>
+
+
+
+                    <% var errMsg = error;%>
+                        <% if (error!= undefined && error.length > 0) {
                 if(errMsg=="invalid")
                     infoMsg="Username or Password is not valid.";
-            
-            %>
-                <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block">
-                    <%-infoMsg%>
+                %>
+               <div id="info-container" class="alert alert-success " role="alert-danger alert" style="display:block;max-width: 400px; margin: 0 auto;">
+                                <%-infoMsg%>
                 </div>
-            <%}%>
-            
-    </div>
-</section>
+               <%}%>
+
+
+                                <!-- user info -->
+                                <div class="row">
+                                    <div class="index-section index-input">
+
+
+
+                                        <form action="/auth" method="post">
+                                            <div>
+                                                <input type="text" class="index-textbox index-email" placeholder="Enter Your Email" id="email" name="email" value="">
+                                            </div>
+                                            <div>
+                                                <input type="password" class="index-textbox index-password" placeholder="Enter Your Password" id="password" name="password" value="">
+                                            </div>
+                                            <div>
+                                                <a href="forget_pw">Forget Password?</a>
+                                            </div>
+                                            <div>
+                                                <button type="submit" class="index-button" id="btn_start" onclick="">Login</button>
+                                                <button type="button" class="index-button" id="" onclick="location.href='/signup'">Sign up</button>
+                                                <div class="popover-signup">
+                                                    <!-- NEW -->
+                                                    <div class="popover bottom" style="background-color: #ffe000;border:none">
+                                                        <div class="arrow" style="border-bottom-color: rgba(0,0,0,-5.75);"></div>
+                                                        <div class="popover-content">
+                                                            <p style="color:white;font-size: 17px;">Sign up with email like @hku.hk @cuhk.edu.hk to meet your classmates!</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                                <div id="error-container" class="alert alert-danger" role="alert" style="display:none"></div>
+
+
+
+
+
+
+    </section>
     <script src="static/js/jquery-1.11.3.min.js"></script>
 </body>
 

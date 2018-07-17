@@ -26,7 +26,7 @@ formidable = require('formidable'),
 
 //var domain = "http://localhost:3000";
 //var domain = "https://getstartednode-smart-grysbok.mybluemix.net";
-var domain = "https://circleio.mybluemix.net/";
+var domain = "https://circleio.mybluemix.net";
 
 console.log("domain=" + os.hostname());
 
@@ -229,8 +229,9 @@ app.get('/preview/', function (req, res) {
 
 
             } else {
-                res.render('pages/error');
-
+                //res.render('pages/error');
+                res.status(404)        // HTTP status 404: NotFound
+                   .send('Not found');
             }
         } //endif
         else {
@@ -344,6 +345,9 @@ app.get("/forget_pw", function (req, res) {
 
 });
 
+
+
+
 app.get("/send_pw_email", function (req, res) {
     //a picId is required to /update_profile_page?picId=xxxx
 
@@ -384,13 +388,14 @@ app.get("/send_pw_email", function (req, res) {
 
 
                 var link = domain + "/reset_pw?code=" + user.activate_code;
+                emailHTML='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">    <head>        <meta http-equiv="Content-Type" content`="text/html; charset=UTF-8" />        <title></title>        <style></style>    </head>    <body>        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">            <tr>                <td align="center" valign="top">                    <table border="0" cellpadding="20" cellspacing="0" width="600" id="emailContainer">                        <tr>                            <td align="center" valign="top">                                <img src="https://i.imgur.com/HkFS37I.jpg" width= "100px" style= "border: none; display: block; outline: none; width: 100px; opacity: 1; max-width: 100%;">                                <br>Dear, Dear user, Please click the following link to reset your password:<br> Please click the following link: <br><a href="' + link + '">link to reset</a></td></tr></table></td></tr></table></body></html>';
                 // setup e-mail data with unicode symbols
                 var mailOptions = {
                     from: "thesocialcircleappnoreply@gmail.com", // sender address
                     to: email, // list of receivers
                     subject: "Reset of password of your account", // Subject line
                     text: "Dear user, Please click the following link to reset your password: " + link, // plaintext body
-                    html: "Dear user, Please click the following link to reset your password: <a href='" + link + "'>" + link + "</a>" // html body
+                    html: emailHTML // html body
                 }
 
                 // send mail with defined transport object
@@ -494,7 +499,8 @@ app.get("/update_profile_page", function (req, res) {
 
     res.render('pages/update_profile_page', {
         picId: req.query.picId,
-        err: req.query.err
+        err: req.query.err,
+        token: req.query.token
     });
 
 
@@ -568,7 +574,7 @@ app.post("/update_profile", function (req, res) {
 
     //////////
 
-
+    var token;
     var picId;
     var id;
     var rev;
@@ -579,9 +585,11 @@ app.post("/update_profile", function (req, res) {
 
     form.parse(req, function (err, fields, files) {
         picId = fields.picId;
+        token = fields.token;
+        
         if (err) {
             console.log(err);
-            res.redirect('/update_profile_page?picId=' + picId + "&err=fileSize");
+            res.redirect('/update_profile_page?picId=' + picId + '&token='+token+'&err=fileSize');
             return;
 
         }
@@ -600,7 +608,7 @@ app.post("/update_profile", function (req, res) {
         if (file_ext !== "jpg" && file_ext !== "png" && file_ext !== "gif") {
             console.log("file is not picture type");
             //error
-            res.redirect('/update_profile_page?picId=' + picId + "&err=picType");
+            res.redirect('/update_profile_page?picId=' + picId + '&token='+token+'&err=picType');
             return;
         }
 
@@ -653,7 +661,8 @@ app.post("/update_profile", function (req, res) {
 
                                 res.render('pages/update_profile_page', {
                                     picId: picId,
-                                    err: ""
+                                    err: "",
+                                    token:token
                                 });
 
                             })
@@ -677,7 +686,8 @@ app.post("/update_profile", function (req, res) {
 
                                 res.render('pages/update_profile_page', {
                                     picId: picId,
-                                    err: ""
+                                    err: "",
+                                    token: token
 
                                 });
 
@@ -1041,13 +1051,17 @@ app.post('/new_user', urlencodedParser, function (req, res) {
                         }
                     });
                     var link = domain + "/activate?code=" + user.activate_code;
+                    var emailHTML='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">    <head>        <meta http-equiv="Content-Type" content`="text/html; charset=UTF-8" />        <title></title>        <style></style>    </head>    <body>        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">            <tr>                <td align="center" valign="top">                    <table border="0" cellpadding="20" cellspacing="0" width="600" id="emailContainer">                        <tr>                            <td align="center" valign="top">                                <img src="https://i.imgur.com/HkFS37I.jpg" width= "100px" style= "border: none; display: block; outline: none; width: 100px; opacity: 1; max-width: 100%;">                                <br>Dear, just one more step to activate your account!<br> Please click the following link: <br><a href="' + link + '">link to activate</a></td></tr></table></td></tr></table></body></html>';
+
+                        
+                        
                     // setup e-mail data with unicode symbols
                     var mailOptions = {
                         from: "thesocialcircleappnoreply@gmail.com", // sender address
                         to: email, // list of receivers
                         subject: "Activation of your account", // Subject line
                         text: "Dear user, Please click the following link to activate your account: " + link, // plaintext body
-                        html: "Dear user, Please click the following link to activate your account: <a href='" + link + "'>" + link + "</a>" // html body
+                        html: emailHTML // html body
                     }
 
                     // send mail with defined transport object
@@ -1755,19 +1769,27 @@ app.get('/testFriendListToProfile', function (req, res) {
 });
 
 app.get('/chatroom', function (req, res) {
-    if (typeof req.session.token == 'undefined') {
-        res.redirect('/login');
+ /*   if (typeof req.session.token == 'undefined') {
+        console.log("session not found");
+        res.redirect('/login?info=session_expired');
         return;
     }
-
+*/
 
     console.log("chatroom");
     //get token
     var token = req.query.t;
     if (typeof token == 'undefined')
         token = req.session.token;
+    
+    if (typeof token == 'undefined'){
+         res.redirect('/login?msg=no_token');
+         return;
+        
+    }
 
-
+    
+    
     console.log("token=" + token);
     //get email from token
     // var userId = "heeheehaha45@abc.com";

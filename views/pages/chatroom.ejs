@@ -340,7 +340,7 @@
       </div>
       <div class="modal-footer">
         <center><button id="btnUpdateAvatar" type="button" class="btn btn-primary btn-lg">Yes</button>
-		<button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">No</button></center>
+		<button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal" onclick="getNewFriendsNoDialog()">No</button></center>
       </div>
     </div>
   </div>
@@ -492,11 +492,57 @@
                             });
                         }
                         
+                        function getNewFriendsNoDialog(){
+							
+							
+                            var cards = [];
+                            console.log("userT:"+$("#userT").val());
+                            $.get("/new_friend_list", {
+                                t: $("#userT").val()
+                            })
+                            .done(function(data) {
+ 
+                                var str="";
+                                for (var i = 0; i < data.length; i++) {
+                                    //str = str+"Potential friend "+ i +" 's data:\n" 
+                                    //str = str + JSON.stringify( data[i] ) + "\nlink to add him as friend: /new_friend_select?identity="+data[i].identity+"&t="+$("#userT").val();
+                                    //str=str+"\n\n";
+									var faculty = "";
+									var desc = "";
+									
+									if (typeof data[i].faculty != 'undefined' && data[i].faculty.trim().length > 0)
+									{
+										faculty = "(" + data[i].faculty + ")";
+									}
+									
+									if (typeof data[i].description != 'undefined' && data[i].description.trim().length > 0)
+									{
+										desc = data[i].description;
+									}
+									
+                                    cards.push(new Tindercardsjs.card(1, data[i].identity, data[i].name, faculty, desc, data[i].picURL, '/new_friend_select?identity='+data[i].identity+'&t='+$("#userT").val()));                       
+                                }
+                                
+                                //alert(str) ;
+                                //console.log(str);
+                                
+                                $('#myModal').show();
+ 
+                                // Render cards
+                                Tindercardsjs.render(cards, $('#friend-card'), 'true', function (event) {
+                                  console.log('Swiped ' + event.direction + ', cardid is ' + event.cardid + ' and target is:');
+                                  console.log(event.card);
+                                });
+                            });
+                        } 
+                    
  
                 </script>
                 
                  <form id="frmUpdateMyAvatar" action="/update_profile_page" method="GET">
-                    <input type="hidden"  name="picId" value="<%= picId%>">
+                    <input type="hidden"  name="token" value="<%= token%>">
+
+                     <input type="hidden"  name="picId" value="<%= picId%>">
                     <!--<li><input type="submit" class="btn btn-info btn-lg" value="Change profile pic"></li>-->
                  </form>
                  
@@ -505,7 +551,7 @@
                     <!--<li><input type="submit" class="btn btn-info btn-lg" value="Change profile data"></li>-->
                  </form>
 				 
-				 <form id="frmChangePwd" action="/reset_pw" method="GET">
+				 <form id="frmChangePwd" action="/forget_pw" method="GET">
 				    <input type="hidden"  name="token" value="<%= token%>">
                  </form>
                 
@@ -516,7 +562,7 @@
                 </form>
 				
    </ul> 
-				<div class="fb-share-button" data-href="https://circleio.mybluemix.net/login/" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcircleio.mybluemix.net%2Flogin%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+				<!--<div class="fb-share-button" data-href="https://circleio.mybluemix.net/login/" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcircleio.mybluemix.net%2Flogin%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>-->
 
             <select style="display: none;" id="room_id" onchange="changeChatRoom()">
                 <% for(var i=0; i<friend_list.length; i++) {%>
